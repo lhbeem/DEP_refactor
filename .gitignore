@@ -1,0 +1,16 @@
+__pycache__
+lookup/__pycache__
+figures
+lookup/tracking.pkl
+ookup/pfas_source.pkl
+lookup/location_list.xlsx
+lookup/images
+letters
+lookup/LD_site_table.py
+lookup/nonLD_site_table.py
+pfas_utils/__pycache__
+site_specific/state_wide_soil/all_compounds/
+
+*pdf
+*png
+*.pptx
