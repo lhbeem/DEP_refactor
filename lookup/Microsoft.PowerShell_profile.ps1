@@ -8,33 +8,34 @@ function lab { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents
 function edd_test { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\edd_test.py" @args }
 function folder { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\folder.py" @args }
 
-function letter { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\gen_letter.py" @args }
-function egad { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\egad.py" @args }
-function coc { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\coc_generator.py" @args }
-function site_pt { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\egad_site_pt.py" @args }
-function ll2utm { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\ll2utm.py" @args}
+function letter { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\gen_letter.py" @args }
+function egad { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\egad.py" @args }
+function coc { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\coc_generator.py" @args }
+function site_pt { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\egad_site_pt.py" @args }
+function ll2utm { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\ll2utm.py" @args}
+function ec {& python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\ec.py" @args}
 
 function load_profile {. $profile ;
-			Copy-Item -Path "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1" -Destination "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\lookup\"} 
+			Copy-Item -Path "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1" -Destination "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\lookup\"} 
 
-function pfas_setup { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\pfas_utils\pfas_data_setup.py" @args}
-function pfas_map   { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\pfas_utils\pfas_map.py" @args}
-function pfas_table { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\pfas_utils\pfas_table.py" @args}
-function pfas_table_edd { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\pfas_utils\pfas_table_edd.py" @args}
-function haz { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\pfas_utils\haz_index.py" @args}
-function pfas_query { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\pfas_utils\pfas_query.py" @args}
+function pfas_setup { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pfas_utils\pfas_data_setup.py" @args}
+function pfas_map   { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pfas_utils\pfas_map.py" @args}
+function pfas_table { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pfas_utils\pfas_table.py" @args}
+function pfas_table_edd { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pfas_utils\pfas_table_edd.py" @args}
+function haz { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pfas_utils\haz_index.py" @args}
+function pfas_query { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pfas_utils\pfas_query.py" @args}
 
 
-function sop { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\sop.py" @args}
-function rule { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\rules.py" @args}
-function make_site_folder { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\make_site_folder.py" @args}
-function soil_type { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\soil_legend.py" @args }
+function sop { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\sop.py" @args}
+function rule { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\rules.py" @args}
+function make_site_folder { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\make_site_folder.py" @args}
+function soil_type { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\soil_legend.py" @args }
 
-function allshp	{ & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\all_shp_convert.py"}
-function shp2gpkg { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\shp2gpkg.py" @args}
+function allshp	{ & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\all_shp_convert.py"}
+function shp2gpkg { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\shp2gpkg.py" @args}
 
-function new_site { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\site_bg_info.py" @args}
-
+function new_site { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\site_bg_info.py" @args}
+function all_folder { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\omni_folder.py" @args }
 
 
 ## py distribution testing 
@@ -55,8 +56,8 @@ function letter_pfas { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\D
 
 ## functions that do not utilize python
 
-function proj { cd "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\"}
-function lab_track { start "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\lookup\Spill_lab_tracking.xlsx"}
+function proj { cd "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\"}
+function lab_track { start "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\lookup\Spill_lab_tracking.xlsx"}
 function doc2pdf { & "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\WindowsPowerShell\d2p.ps1"}
 function profile {notepad $profile}
 
@@ -92,7 +93,7 @@ function site_map { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Docu
 ## other 
 
 function egad_desc { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\egad_desc.py" @args }
-function all_folder { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\omni_folder.py" @args }
+# function all_folder { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\omni_folder.py" @args }
 function tax_map { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\tax.py" @args}
 function azimuth { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\azimuth.py" @args}
 
