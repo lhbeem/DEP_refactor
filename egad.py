@@ -48,9 +48,9 @@ def get_desc(seq,df=None):
     desc = df[df.EGAD_SEQ == seq].SITE_DESCR.iloc[0]
     narr = df[df.EGAD_SEQ == seq].NARATIVE_S.iloc[0]
     
-    if len(desc) == 0:
+    if desc == None:
         desc = 'None'
-    if len(narr) == 0:
+    if narr == None:
         narr = 'None'
 
     return desc, narr
@@ -92,9 +92,12 @@ def main(args):
             print('')
         if args.d:
             desc,narr = get_desc(seq)
+            print('Site Description')
             print(desc)
             print('')
+            print('Site Narrative')
             print(narr)
+            print('')
             
     else:
         # presume a string

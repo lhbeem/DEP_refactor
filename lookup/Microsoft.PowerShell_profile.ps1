@@ -66,6 +66,8 @@ function arc {MSTSC "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\rdp
 function pass {Set-Clipboard -Value "j,h%&x-P7<7WtC&}"}
 function pass_or {Set-Clipboard -Value "2p7n^D0b1,!)m-Y"}
 
+function smro_hunt ($key) { ls "H:\BRWM\BRWM Databases\FILE ROOM\TechServSpillClosure\SMRO" | sls $key}
+
 ## geo commands 
 
 # function shp2gpkg { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\shp2gpkg.py" @args}
@@ -92,7 +94,7 @@ function site_map { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Docu
 
 ## other 
 
-function egad_desc { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\egad_desc.py" @args }
+function egad_desc { echo "Use egad -d instead" }
 # function all_folder { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\omni_folder.py" @args }
 function tax_map { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\tax.py" @args}
 function azimuth { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\azimuth.py" @args}

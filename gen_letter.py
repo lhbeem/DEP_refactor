@@ -819,6 +819,7 @@ if __name__=="__main__":
     parser.add_argument('-results', help='this is to generate typical results letters during monitoring, pass the sample number with subsample')
     parser.add_argument('-next', nargs='?', default=None, help="month and year for next sample contact default is to use three months after the last sample date. if 'skip' is passed as argument, sentence concerning next sample scheduling is omitted ")
     parser.add_argument('-last', help='This is to generate last results letters indicating ending monitoring, pass the sample number with subsample')
+    parser.add_argument('-d',action='store_true',help='Detection Letter Override')
     args = parser.parse_args()
 
     

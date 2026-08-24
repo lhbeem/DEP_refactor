@@ -219,6 +219,7 @@ def plot_table_soil(table,page=1):
     outfile = base_folder +'/../figures/{}_soil_{}'.format(args.site,page)
     for ext in ['.png','.pdf']:
         fig.savefig(outfile + ext)
+        print('saving: {}'.format(outfile+ext))
     
     os.startfile(outfile+'.pdf')
 
@@ -230,11 +231,11 @@ def main(args):
     # RAG and EPA MCL in ppb
     
     
-    
     if not args.s:
         data = gpd.read_file(paths.sample_locations)
         data = data[data['EGAD_SITE_'] == args.site]
         data = data.sort_values(by='FEATURE_NA')
+        
         if args.qc:
             print('\nThere are {} locations in /PFAS Groundwater Results.gpkg\n'.format(len(data.FEATURE_NA.to_list())))
             for name in data.FEATURE_NA.to_list():
@@ -249,12 +250,11 @@ def main(args):
                 plot_table(table)
             elif (len(data) > 5) and (len(data) <= 10): # split between two tables 
                 length = int(round(len(data)/2))
-        
                 table1 = make_table(data.iloc[:length,:])
                 table2 = make_table(data.iloc[length:,:])
                 plot_table(table1)
                 plot_table(table2,page=2)
-            elif (len(data) > 11):
+            elif (len(data) >= 11):
                 n_pages = int( np.ceil( len(data)/5 ) )
                 for n in range(n_pages):
                     ii = n * 5
