@@ -39,7 +39,19 @@ pfas = {'PFOS' : ['40', '','4','PFOS'],
         'HFPO-DA': ['60','','10','HFPO_DA'],
         'SUM OF 6': ['','20','','SUM_OF_6_P'],
         }
- 
+
+
+pfas_norag = {'PFOS' : ['','4','PFOS'],
+        'PFOA' : ['','4','PFOA'],
+        'PFBS' : ['','10','PFBS'],
+        'PFHXS': ['','10','PFHXS'],
+        'PFNA': [ '','10','PFNA'],
+        'PFHPA': [ '','','PFHPA'] , # part of sum of six
+        'PFDA': ['','','PFDA'], # part of sum of six 
+        'HFPO-DA': ['','10','HFPO_DA'],
+        'SUM OF 6': ['20','','SUM_OF_6_P'],
+        }
+
 # columns are 2023 RAGs LTG, 2023 RAGs Residential 
 soil = {'PFOS'      :['1','170'],
         'PFOA'      :['17','260'],
@@ -74,6 +86,28 @@ def make_table(data):
         table.loc[len(table)] = row
     return table
 
+def make_table_norag(data):
+    table = pd.DataFrame(['','Interim\nDWS','EPA\nMCL']+data.FEATURE_NA.to_list()).T
+    
+    date = []
+    for d in data.SAMPLE_DAT.to_list():
+        date.append(d.strftime('%m/%d/%y'))
+    
+    table.loc[len(table)] = ['Date']+['']*2+date
+    
+    for p in pfas_norag:
+        cons = []
+        con =  data[pfas_norag[p][2]].to_list()
+        for c in con:
+            if c.startswith('ND'):
+                cons.append('-')
+            else:
+                cons.append(c.split(' ')[0])
+        
+        
+        row = [p,pfas_norag[p][0],pfas_norag[p][1]]+cons
+        table.loc[len(table)] = row
+    return table
 
 def make_table_soil(data):
     table = pd.DataFrame(['','2023 RAG\nLTG','2023 RAG\nResidential']+data.FEATURE_NA.to_list()).T
@@ -100,9 +134,11 @@ def make_table_soil(data):
     return table
 
 
-
-def plot_table(table,page=1):
-    fig = pl.figure(figsize=[8.5,11])
+def plot_table(table,page=1, landscape=False):
+    if landscape:
+        fig = pl.figure(figsize=[11,8.5])
+    else:
+        fig = pl.figure(figsize=[8.5,11])
     fig.clf()
     ax = fig.add_axes([.05,.05,.9,.9])
     
@@ -116,6 +152,7 @@ def plot_table(table,page=1):
     tbl.scale(1,1.25)
     
     
+
     for i in range(0,table.shape[1]):
         tbl[0,i].set_height(.23)
     for i in range(4,table.shape[1]):
@@ -128,7 +165,7 @@ def plot_table(table,page=1):
     for j in range(4,table.shape[1]):
         for i in range(0,table.shape[0]):
             tbl[i,j].set_width(.125)
-    
+
     
     # set colors
     rag_color = np.array([255,255,191]) / 255
@@ -169,6 +206,92 @@ def plot_table(table,page=1):
         fig.savefig(outfile + ext)
     
     os.startfile(outfile+'.pdf')
+
+
+def plot_table_norag(table,page=1, landscape=False):
+    if landscape:
+        fig = pl.figure(figsize=[11,8.5])
+    else:
+        fig = pl.figure(figsize=[8.5,11])
+    fig.clf()
+    ax = fig.add_axes([.05,.05,.9,.9])
+    
+    ax.axis('off')
+    
+    # tbl = pl_table(ax, table,loc='center', cellLoc='center')
+    tbl = ax.table(cellText=table.values, colLabels=None, loc='center',cellLoc='center')
+    
+    tbl.auto_set_font_size(False)
+    tbl.set_fontsize(12)
+    tbl.scale(1,1.25)
+    
+    if landscape:
+        for i in range(0,table.shape[1]):
+            tbl[0,i].set_height(.26)
+        for i in range(3,table.shape[1]):
+            tbl[0,i].get_text().set_rotation(90)
+        for i in range(0,table.shape[0]):
+            tbl[i,0].set_width(.10)
+            tbl[i,1].set_width(.07)
+            tbl[i,2].set_width(.07)
+        for j in range(3,table.shape[1]):
+            for i in range(0,table.shape[0]):
+                tbl[i,j].set_width(.085)
+    else:
+        for i in range(0,table.shape[1]):
+            tbl[0,i].set_height(.23)
+        for i in range(3,table.shape[1]):
+            tbl[0,i].get_text().set_rotation(90)
+        for i in range(0,table.shape[0]):
+            tbl[i,0].set_width(.125)
+            tbl[i,1].set_width(.1111)
+            tbl[i,2].set_width(.1111)
+        for j in range(3,table.shape[1]):
+            for i in range(0,table.shape[0]):
+                tbl[i,j].set_width(.125)
+    
+    
+    # set colors
+    # rag_color = np.array([255,255,191]) / 255
+    dws_color = np.array([161,215,106]) / 255
+    mcl_color = np.array([252,141,89]) / 255
+    
+    for i in range(0,table.shape[0]):
+        # tbl[i,1].set_facecolor(rag_color)
+        tbl[i,1].set_facecolor(dws_color)
+        tbl[i,2].set_facecolor(mcl_color)
+    
+    
+    
+    #set DWS exceedance
+    for i,c in enumerate(table.iloc[10,4:].to_list()):
+        if c.startswith('-'):
+            continue
+        if float(c.split(' ')[0]) > float(pfas_norag['SUM OF 6'][0]):
+            tbl[12,i+3].set_facecolor(dws_color)
+        
+    # set RAG and MCL exceedance
+    for j,p in enumerate(pfas_norag):
+        I = j + 2
+        for i,c in enumerate( table.iloc[I , 3:].to_list() ):
+            if c.startswith('-'):
+                continue
+            # if pfas[p][0] != '':
+            #     if float(c.split(' ')[0]) > float(pfas[p][0]):
+            #         tbl[I,i+4].set_facecolor(rag_color)
+            if pfas[p][2] != '':
+                if float(c.split(' ')[0]) > float(pfas_norag[p][1]):
+                    tbl[I,i+3].get_text().set_color(mcl_color)
+                    tbl[I,i+3].get_text().set_fontweight('bold')
+    
+    
+    outfile = base_folder +'/../figures/{}_{}'.format(args.site,page)
+    for ext in ['.png','.pdf']:
+        fig.savefig(outfile + ext)
+    
+    os.startfile(outfile+'.pdf')
+
+
 
 def plot_table_soil(table,page=1):
     fig = pl.figure(figsize=[8.5,11])
@@ -245,21 +368,46 @@ def main(args):
             print('sample site names in EGAD_Sample_Locations.gpkg')
             geo_utils.find_site_locations(args.site)
         elif not args.qc:
-            if len(data) < 6: # one table
-                table = make_table(data)
-                plot_table(table)
-            elif (len(data) > 5) and (len(data) <= 10): # split between two tables 
+            if len(data) < 7: # one table portrait
+                table = make_table_norag(data)
+                plot_table_norag(table)
+            elif len(data) < 11: # plot landscape single row
+                table = make_table_norag(data)
+                plot_table_norag(table,landscape=True)
+            elif len(data) < 13: # two pages portrait
                 length = int(round(len(data)/2))
-                table1 = make_table(data.iloc[:length,:])
-                table2 = make_table(data.iloc[length:,:])
-                plot_table(table1)
-                plot_table(table2,page=2)
-            elif (len(data) >= 11):
-                n_pages = int( np.ceil( len(data)/5 ) )
+                table1 = make_table_norag(data.iloc[:length,:])
+                table2 = make_table_norag(data.iloc[length:,:])
+                plot_table_norag(table1)
+                plot_table_norag(table2,page=2)
+            elif len(data) < 21: # two pages landscape
+                length = int(round(len(data)/2))
+                table1 = make_table_norag(data.iloc[:length,:])
+                table2 = make_table_norag(data.iloc[length:,:])
+                plot_table_norag(table1,landscape=True)
+                plot_table_norag(table2,page=2,landscape=True)
+            
+            else: #greater than 20 sample locations n number of landscape pages
+                n_pages = int( np.ceil( len(data)/10 ) )
                 for n in range(n_pages):
-                    ii = n * 5
-                    table = make_table(data.iloc[ii:ii+5])
-                    plot_table(table,page = n+1)
+                    ii = n * 10
+                    table = make_table_norag(data.iloc[ii:ii+10])
+                    plot_table_norag(table,page = n+1,landscape=True)
+                
+  
+                
+            # elif (len(data) > 5) and (len(data) <= 10): # split between two tables 
+            #     length = int(round(len(data)/2))
+            #     table1 = make_table(data.iloc[:length,:])
+            #     table2 = make_table(data.iloc[length:,:])
+            #     plot_table(table1)
+            #     plot_table(table2,page=2)
+            # elif (len(data) >= 11):
+            #     n_pages = int( np.ceil( len(data)/5 ) )
+            #     for n in range(n_pages):
+            #         ii = n * 5
+            #         table = make_table(data.iloc[ii:ii+5])
+            #         plot_table(table,page = n+1)
 
     elif args.s:
         data = gpd.read_file(paths.soil_polygons)
