@@ -1,12 +1,12 @@
 ## refactor commands
 
-function juxta { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\juxtapose.py" @args }
-function make_site { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\make_site.py" @args }
-function site { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\site.py" @args }
-function rag { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\compare_rags.py" @args }
-function lab { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\lab.py" @args }
-function edd_test { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\edd_test.py" @args }
-function folder { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\refactor\folder.py" @args }
+function juxta { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\juxtapose.py" @args }
+function make_site { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\make_site.py" @args }
+function site { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\site.py" @args }
+function rag { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\compare_rags.py" @args }
+function lab { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\lab.py" @args }
+function edd_test { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\edd_test.py" @args }
+function folder { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\folder.py" @args }
 
 function letter { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\gen_letter.py" @args }
 function egad { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\egad.py" @args }
@@ -67,6 +67,10 @@ function pass {Set-Clipboard -Value "j,h%&x-P7<7WtC&}"}
 function pass_or {Set-Clipboard -Value "2p7n^D0b1,!)m-Y"}
 
 function smro_hunt ($key) { ls "H:\BRWM\BRWM Databases\FILE ROOM\TechServSpillClosure\SMRO" | sls $key}
+
+function prism {Start-Process "https://wd5-identity.myworkday.com/wday/authgwy/maine/upc/login"}
+
+
 
 ## geo commands 
 
