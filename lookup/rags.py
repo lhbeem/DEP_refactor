@@ -322,9 +322,7 @@ petrol_soil_resd = {'2-Methylnaphthalene':'330',
                     'Pyrene':'2500',
                     'Toluene':'750',
                     'o-Xylene':'260',
-                    'p/m-Xylene':'260',
-                    
-                     
+                    'p/m-Xylene':'260',          
                     }
 
 all_soil_resd = pfas_soil_resd | petrol_soil_resd

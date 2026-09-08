@@ -63,6 +63,11 @@ def get_ml(town,maplot):
         mm = maplot.split('-')
         m = mm[0]
         l = mm[1]+ mm[2]
+    elif town.lower() in ['cumberland']:
+        #Rm ##l## (space delimeted leading and trailing zeros)
+        mm = maplot.split(' ')
+        m = mm[0][1:]
+        l = mm[1][:-4]
     elif town.lower() in ['durham','brunswick']:
         # unknown
         m = maplot
@@ -82,8 +87,8 @@ def main(args):
     
     if len(args.pt) == 1:
         print('Using sequence number')
-        point = geo_utils.find_site_point(args.pt[0])
-        print(point)
+        point = geo_utils.find_site_point(int(args.pt[0]))
+
     elif len(args.pt) == 2:
         args.pt = [float(args.pt[0]) , float(args.pt[1])]
         if args.pt[0] < 100:
@@ -95,7 +100,7 @@ def main(args):
             print('Using utm coorindate pair')
             point = [args.pt[0], args.pt[1]]
     else:
-        print('number of args is no one or two')
+        print('number of args is not one or two')
         exit()
         
         
