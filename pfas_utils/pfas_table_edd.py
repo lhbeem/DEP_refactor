@@ -17,13 +17,14 @@ sys.path.append(os.path.join(base_folder,'..','lookup'))
 sys.path.append(os.path.join(base_folder,'..',))
 
 import paths
+import edd_utils as edd
 
 import argparse
 import numpy as np
 import pandas as pd
 import geopandas as gpd
 from matplotlib import pylab as pl
-
+import datetime
 
 
 # columns are 2023 RAGs Residential, Interim Drinking water, EPA MCL
@@ -98,7 +99,8 @@ def make_table_soil(data):
     location_names.sort()
     date = []
     for location in location_names:
-        date.append(data[data.SAMPLE_POINT_NAME == location].SAMPLE_DATE.iloc[0].strftime('%m/%d/%Y'))
+        date_ob = datetime.datetime.strptime(data[data.SAMPLE_POINT_NAME == location].SAMPLE_DATE.iloc[0],'%m/%d/%Y')
+        date.append(date_ob.strftime('%m/%d/%Y'))
     
     table = pd.DataFrame(['','2023 RAG\nLTG','2023 RAG\nResidential']+location_names).T
     table.loc[len(table)] = ['Date']+['']*2+date
@@ -117,6 +119,8 @@ def make_table_soil(data):
                     continue
         for c in con:
             if c == 'nan':
+                cons.append('-')
+            elif c.startswith('ND'):
                 cons.append('-')
             else:
                 cons.append(c)
@@ -238,11 +242,11 @@ def plot_table_soil(table,page=1):
                 continue
             
             if float(c.split(' ')[0]) > float(soil[p][0]):
-                tbl[I,i+4].set_facecolor(ltg_color)
+                tbl[I,i+3].set_facecolor(ltg_color)
             
             if float(c.split(' ')[0]) > float(soil[p][1]):
-                tbl[I,i+4].get_text().set_color(res_color)
-                tbl[I,i+4].get_text().set_fontweight('bold')
+                tbl[I,i+3].get_text().set_color(res_color)
+                tbl[I,i+3].get_text().set_fontweight('bold')
     
     pl.tight_layout()
     outfile = base_folder +'/../figures/{}_soil_{}'.format(args.sample,page)
@@ -285,12 +289,18 @@ def main(args):
 
     elif args.s:
         
-        data = gpd.read_file(paths.edd +'/' + args.sample+'_m60.xlsx')
+        try:
+            print('trying .xls')
+            data = edd.load_edd(paths.edd +'/' + args.sample+'_m60.xls')
+            data = data[data.LAB_SAMPLE_ID.str.startswith('L')]
+
+        except:
+            data = gpd.read_file(paths.edd +'/' + args.sample+'_m60.xlsx')
         data = data[data.SAMPLE_TYPE == 'SL']
         data = data.sort_values(by='SAMPLE_POINT_NAME')
         point_names = set(data.SAMPLE_POINT_NAME)
         
-        
+        print(len(point_names))
         if len(point_names) < 6:
             table = make_table_soil(data)
             plot_table_soil(table)

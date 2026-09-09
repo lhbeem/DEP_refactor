@@ -18,10 +18,16 @@ import argparse
 
 
 def main(args):
-    geo_utils.find_site_point(args.seq)
-    geo_utils.find_site_locations(args.seq)
-    geo_utils.find_polygon(args.seq)
-    geo_utils.find_soil_polygon(args.seq)
+    geo_utils.find_site_point(args.seq, p=True)
+    geo_utils.find_site_locations(args.seq, p=True)
+    geo_utils.find_polygon(args.seq, p=True)
+    geo_utils.find_soil_polygon(args.seq, p=True)
+    
+    locs = geo_utils.find_pfas_locations(args.seq)
+    print('\nThere are {} locations in /PFAS Groundwater Results.gpkg'.format(len(locs.FEATURE_NA.to_list())))
+    for name in locs.FEATURE_NA.to_list():
+        print(name)
+    print('')
     return
     
 

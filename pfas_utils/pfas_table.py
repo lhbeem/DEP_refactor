@@ -359,40 +359,36 @@ def main(args):
         data = data[data['EGAD_SITE_'] == args.site]
         data = data.sort_values(by='FEATURE_NA')
         
-        if args.qc:
-            print('\nThere are {} locations in /PFAS Groundwater Results.gpkg\n'.format(len(data.FEATURE_NA.to_list())))
-            for name in data.FEATURE_NA.to_list():
-                print(name)
-            
+        
+        if len(data) == 0:
             print('')
-            print('sample site names in EGAD_Sample_Locations.gpkg')
-            geo_utils.find_site_locations(args.site)
-        elif not args.qc:
-            if len(data) < 7: # one table portrait
-                table = make_table_norag(data)
-                plot_table_norag(table)
-            elif len(data) < 11: # plot landscape single row
-                table = make_table_norag(data)
-                plot_table_norag(table,landscape=True)
-            elif len(data) < 13: # two pages portrait
-                length = int(round(len(data)/2))
-                table1 = make_table_norag(data.iloc[:length,:])
-                table2 = make_table_norag(data.iloc[length:,:])
-                plot_table_norag(table1)
-                plot_table_norag(table2,page=2)
-            elif len(data) < 21: # two pages landscape
-                length = int(round(len(data)/2))
-                table1 = make_table_norag(data.iloc[:length,:])
-                table2 = make_table_norag(data.iloc[length:,:])
-                plot_table_norag(table1,landscape=True)
-                plot_table_norag(table2,page=2,landscape=True)
-            
-            else: #greater than 20 sample locations n number of landscape pages
-                n_pages = int( np.ceil( len(data)/10 ) )
-                for n in range(n_pages):
-                    ii = n * 10
-                    table = make_table_norag(data.iloc[ii:ii+10])
-                    plot_table_norag(table,page = n+1,landscape=True)
+            print('No GW data for {}. Table not printed.'.format(args.site))
+            print('')
+        elif len(data) < 7: # one table portrait
+            table = make_table_norag(data)
+            plot_table_norag(table)
+        elif len(data) < 11: # plot landscape single row
+            table = make_table_norag(data)
+            plot_table_norag(table,landscape=True)
+        elif len(data) < 13: # two pages portrait
+            length = int(round(len(data)/2))
+            table1 = make_table_norag(data.iloc[:length,:])
+            table2 = make_table_norag(data.iloc[length:,:])
+            plot_table_norag(table1)
+            plot_table_norag(table2,page=2)
+        elif len(data) < 21: # two pages landscape
+            length = int(round(len(data)/2))
+            table1 = make_table_norag(data.iloc[:length,:])
+            table2 = make_table_norag(data.iloc[length:,:])
+            plot_table_norag(table1,landscape=True)
+            plot_table_norag(table2,page=2,landscape=True)
+        
+        else: #greater than 20 sample locations n number of landscape pages
+            n_pages = int( np.ceil( len(data)/10 ) )
+            for n in range(n_pages):
+                ii = n * 10
+                table = make_table_norag(data.iloc[ii:ii+10])
+                plot_table_norag(table,page = n+1,landscape=True)
                 
   
                 
@@ -413,25 +409,28 @@ def main(args):
         data = gpd.read_file(paths.soil_polygons)
         data = data[data['EGAD_SITE_'] == args.site]
         data = data.sort_values(by='FEATURE_NA')
-        if args.qc:
-            print('todo make soil qc')
-        elif not args.qc:
-            if len(data) < 6:
-                table = make_table_soil(data)
-                plot_table_soil(table)
-            elif (len(data) > 5) and (len(data) <= 10): # split between two tables 
-                length = int(round(len(data)/2))
-        
-                table1 = make_table_soil(data.iloc[:length,:])
-                table2 = make_table_soil(data.iloc[length:,:])
-                plot_table_soil(table1)
-                plot_table_soil(table2,page=2)
-            elif (len(data) > 11):
-                n_pages = int( np.ceil( len(data)/5 ) )
-                for n in range(n_pages):
-                    ii = n * 5
-                    table = make_table_soil(data.iloc[ii:ii+5])
-                    plot_table_soil(table,page = n+1)
+
+
+        if len(data) == 0:
+            print('')
+            print('No soil data for {}. Table not printed.'.format(args.site))
+            print('')
+        elif len(data) < 6:
+            table = make_table_soil(data)
+            plot_table_soil(table)
+        elif (len(data) > 5) and (len(data) <= 10): # split between two tables 
+            length = int(round(len(data)/2))
+    
+            table1 = make_table_soil(data.iloc[:length,:])
+            table2 = make_table_soil(data.iloc[length:,:])
+            plot_table_soil(table1)
+            plot_table_soil(table2,page=2)
+        elif (len(data) > 11):
+            n_pages = int( np.ceil( len(data)/5 ) )
+            for n in range(n_pages):
+                ii = n * 5
+                table = make_table_soil(data.iloc[ii:ii+5])
+                plot_table_soil(table,page = n+1)
    
 
 
@@ -439,7 +438,6 @@ if __name__=="__main__":
     parser= argparse.ArgumentParser()
 
     parser.add_argument('site' , type=int, help='site sequence number')
-    parser.add_argument('-qc' , action='store_true', help='print details from datasets')
     parser.add_argument('-s', action='store_true', help='make table for soil')
     args = parser.parse_args()
     main(args)

@@ -53,39 +53,56 @@ def pt2zip(x,y):
     return zips.NAME20.tolist()[0]
 
 
-def find_site_point(seq):
+def find_site_point(seq, p=False):
     # check for the existance of a site point
     all_sites = gpd.read_file(paths.egad_sites)
     
     # pt = all_sites[all_sites['GISVIEW_ME'] == seq]
     pt = all_sites[all_sites['MEDEP_Site'] == seq] # change of columns names in gpkg
-    if len(pt) == 1:
-        print('\n{} {} {}\n'.format( pt['MEDEP_S_19'].to_list()[0] , int(float(pt['MEDEP_Si_6'].to_list()[0])),int(float(pt['MEDEP_Si_7'].to_list()[0]))))
-        return [pt['MEDEP_Si_6'].to_list()[0],pt['MEDEP_Si_7'].to_list()[0]]
-    
-    elif len(pt) > 1:
-        print('\nMultiple points found, non unique sequence number\n')
-        print(pt)
-    else:
-        print('\nNo site point found for {}\n'.format(seq))
+    if p:
+        if len(pt) == 1:
+            print('\n{} {} {}\n'.format( pt['MEDEP_S_19'].to_list()[0] , int(float(pt['MEDEP_Si_6'].to_list()[0])),int(float(pt['MEDEP_Si_7'].to_list()[0]))))
+            return [pt['MEDEP_Si_6'].to_list()[0],pt['MEDEP_Si_7'].to_list()[0]]
         
-def find_site_locations(seq):
+        elif len(pt) > 1:
+            print('\nMultiple points found, non unique sequence number\n')
+            print(pt)
+        else:
+            print('\nNo site point found for {}\n'.format(seq))
+            
+    else:
+        return pt
+        
+def find_site_locations(seq,p=False):
     # list the sample location points for a given sequence number
     locations = gpd.read_file(paths.egad_samples)
     
     locs = locations[locations.EGAD_SITE_ == seq]
-    if len(locs) == 0:
-        print('\nNo Locations found for {}\n'.format(seq))
-    else:
-        if len(locs) > 1:
-            plural = 's'
+    
+    if p:
+        if len(locs) == 0:
+            print('\nNo Locations found for {} in EGAD_Sample_Locations.gpkg\n'.format(seq))
         else:
-            plural = ''
-        print('\nThere are {} location{}'.format(len(locs),plural))
-        for loc in locs.iterrows():
-            loc = loc[1]
-            print('{:40} {:10} {:10}'.format(loc.FEATURE_NA,int(loc.X),int(loc.Y)))
-  
+            if len(locs) > 1:
+                plural = 's'
+            else:
+                plural = ''
+            print('\nThere are {} location{} in EGAD_Sample_Locations.gpkg'.format(len(locs),plural))
+            for loc in locs.iterrows():
+                loc = loc[1]
+                print('{:40} {:10} {:10}'.format(loc.FEATURE_NA,int(loc.X),int(loc.Y)))
+    else:
+        return locs
+    
+    
+    
+
+def find_pfas_locations(seq):
+    data =  gpd.read_file(paths.sample_locations)
+    data = data[data['EGAD_SITE_'] == seq]
+    data = data.sort_values(by='FEATURE_NA')
+    return data
+
 def get_quad(x,y):
     # get quandrangle name for a point
     pt = shapely.Point([x,y])
@@ -142,38 +159,46 @@ def get_bedrock(x,y):
     return unit.UNIT.tolist()[0] , unit.SIMPLIFIED.tolist()[0] , status
 
            
-def find_polygon(seq):
+def find_polygon(seq, p=False):
     # if site is PFAS site, a polygon should exist.
     fields = gpd.read_file(paths.fields)
     field = fields[fields.EGAD_SITE_ == seq]
-    if len(field) == 0:
-        print('\nNo feild polygon found for {}\n'.format(seq))
-    else:
-        if len(field) > 1:
-            plural = 's'
+    
+    if p:
+        if len(field) == 0:
+            print('\nNo feild polygon found for {} in Licensed Field.gpkg\n'.format(seq))
         else:
-            plural = ''
-        print('\nThere are {} feilds polygon{}'.format(len(field),plural))
-        for field in field.iterrows():
-            field = field[1]
-            print('{:40}'.format(field.FEATURE_NA,))
-
-def find_soil_polygon(seq):
+            if len(field) > 1:
+                plural = 's'
+            else:
+                plural = ''
+            print('\nThere are {} feilds polygon{} in Licensed Field.gpkg'.format(len(field),plural))
+            for field in field.iterrows():
+                field = field[1]
+                print('{:40}'.format(field.FEATURE_NA,))
+    else:
+        return field
+    
+    
+def find_soil_polygon(seq,p=False):
     # if pfas soils exist there should be a polygon
     fields = gpd.read_file(paths.soil_polygons)
     field = fields[fields.EGAD_SITE_ == seq]
-    if len(field) == 0:
-        print('\nNo soil polygons found for {}\n'.format(seq))
-    else:
-        if len(field) > 1:
-            plural = 's'
+    
+    if p:
+        if len(field) == 0:
+            print('\nNo soil polygons found for {} in PFAS_LD1600_Soil_Sample_Polygons.gpkg\n'.format(seq))
         else:
-            plural = ''
-        print('\nThere are {} soil sample polygon{}'.format(len(field),plural))
-        for field in field.iterrows():
-            field = field[1]
-            print('{:40}'.format(field.FEATURE_NA,))           
-            
+            if len(field) > 1:
+                plural = 's'
+            else:
+                plural = ''
+            print('\nThere are {} soil sample polygon{} in PFAS_LD1600_Soil_Sample_Polygons.gpkg'.format(len(field),plural))
+            for field in field.iterrows():
+                field = field[1]
+                print('{:40}'.format(field.FEATURE_NA,))           
+    else:
+        return field
             
             
 def get_soil( x, y, d=100 ):
