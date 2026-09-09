@@ -78,7 +78,7 @@ def find_site_locations(seq,p=False):
     locations = gpd.read_file(paths.egad_samples)
     
     locs = locations[locations.EGAD_SITE_ == seq]
-    
+    locs = locs.sort_values(by='FEATURE_NA')
     if p:
         if len(locs) == 0:
             print('\nNo Locations found for {} in EGAD_Sample_Locations.gpkg\n'.format(seq))

@@ -79,7 +79,7 @@ def main(args):
                 edd_df = edd.load_edd(edd_path[0])
                 test.append(edd.which_tests(edd_df,samp))
             except: 
-                test.append([])
+                test.append([]) 
         df['test'] = test
         basic_print(df,test=test)
     elif args.site.upper() in df['Loc.'].to_list():

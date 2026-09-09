@@ -159,11 +159,11 @@ def hazard_index(results):
     return index,con
 
 
-def print_rags(results):
+def print_rags(results, medium=''):
     # results in array of results
     
     print('')
-    print(Color.CYAN+'EXCEEDS 2023 RESIDENTIAL RAG' + Color.RESET )
+    print(Color.CYAN+'EXCEEDS 2023 RESIDENTIAL RAG {}'.format(medium) + Color.RESET )
     print('ND  : Non-Detect')
     
     
@@ -233,7 +233,7 @@ def main(args):
         if os.path.isfile(edd_path):
             df = edd.load_edd(edd_path)
             test = edd.which_tests(df,args.sample)
-            
+
             
             if 'eph' in test:
                 results = edd.edd_compound_parse(df,args.sample,'eph')
@@ -249,10 +249,13 @@ def main(args):
             if 'pfas_soil' in test:
                 results = edd.edd_compound_parse(df,args.sample,'pfas')
                 print_pfas_soil(results)
-            if 'soil' in test:
-                results = edd.edd_compound_parse(df,args.sample,'eph') + edd.edd_compound_parse(df,args.sample,'vph')
-                results = list(set(results))
-                print_rags(results)
+            if 'eph_soil' in test:
+                if args.ltg:
+                    results = edd.edd_compound_parse(df,args.sample,'eph',medium='ltg')
+                    print_rags(results,medium='LTG')
+                else:
+                    results = edd.edd_compound_parse(df,args.sample,'eph',medium='sl')
+                    print_rags(results,medium='SOIL')
             if 'voc' in test:
                 results = edd.edd_compound_parse(df,args.sample,'voc')
                 print_rags(results)
@@ -391,6 +394,7 @@ if __name__=="__main__":
     
     
     parser.add_argument('sample' , nargs= '?' , default = None, help=helps)
+    parser.add_argument('-ltg' , action='store_true', help='if test is soil, use leaching to groundwater RAG')
     
     args = parser.parse_args()
     main(args)

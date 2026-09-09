@@ -132,7 +132,6 @@ def which_tests(df,sample):
     df = df[df['LAB_SAMPLE_ID'] == sample]#space after sample number in edd
     
     compounds = df['PARAMETER_NAME'].to_list()
-
     if ('PERFLUOROOCTANESULFONIC ACID (PFOS)' in compounds) or ('PERFLUOROOCTANESULFONIC ACID' in compounds) and ('PFAS, TOTAL (6)' in compounds) or ('SUM OF 6 PFAS (PFHPA + PFHXS + PFOA + PFNA + PFOS + PFDA)' in compounds):
         try:
             samp_type = df[df['PARAMETER_NAME'] == 'PERFLUOROOCTANESULFONIC ACID (PFOS)'].SAMPLE_TYPE.to_list()
@@ -149,9 +148,19 @@ def which_tests(df,sample):
         else: 
             test.append('landfill_short')
     if 'C9-C12 ALIPHATICS, ADJUSTED' in compounds:
-        test.append('vph')
+        samp_type = df[df['PARAMETER_NAME'] == 'C9-C12 ALIPHATICS, ADJUSTED'].SAMPLE_TYPE.to_list()
+        if 'GW' in samp_type:
+            test.append('vph')
+        if 'SL' in samp_type:
+            test.append('vph_soil')
+            
     if 'C9-C18 ALIPHATICS' in compounds:
-        test.append('eph')
+        samp_type = df[df['PARAMETER_NAME'] == 'C9-C18 ALIPHATICS'].SAMPLE_TYPE.to_list()
+        if 'GW' in samp_type:
+            test.append('eph')
+        if 'SL' in samp_type:
+            test.append('eph_soil')
+            
     if 'BROMOFORM' in compounds:
         test.append('voc')
     if ('TOTAL HARDNESS ' in compounds) or ('Hardness as calcium carbonate' in compounds):
@@ -161,7 +170,7 @@ def which_tests(df,sample):
     return test 
     
 
-def edd_compound_parse(df,sample,test):
+def edd_compound_parse(df,sample,test,medium='gw'):
     # sort the dataframe to just the results for the supplied sample number
     res = df[ (df['LAB_SAMPLE_ID'] == sample)]
     # res = res [ res['RESULT_TYPE_CODE'] == 'TRG' ]
@@ -174,7 +183,12 @@ def edd_compound_parse(df,sample,test):
     
     results = []
     for comp in compounds:
-        rag = rags.all_gw[comp]
+        if medium == 'gw':
+            rag = rags.all_gw[comp]
+        elif medium == 'sl':
+            rag = rags.all_soil_resd[comp]
+        elif medium == 'ltg':
+            rag = rags.all_ltg[comp]
         if comp in shortnames: # is test compound in the sample results
             I = shortnames.index(comp)
             row = res.iloc[I]

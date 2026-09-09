@@ -24,7 +24,12 @@ def main(args):
     geo_utils.find_soil_polygon(args.seq, p=True)
     
     locs = geo_utils.find_pfas_locations(args.seq)
-    print('\nThere are {} locations in /PFAS Groundwater Results.gpkg'.format(len(locs.FEATURE_NA.to_list())))
+    
+    if len(locs) > 1:
+        plural = 's'
+    else:
+        plural = ''
+    print('\nThere are {} location{} in /PFAS Groundwater Results.gpkg'.format(len(locs.FEATURE_NA.to_list()),plural))
     for name in locs.FEATURE_NA.to_list():
         print(name)
     print('')
