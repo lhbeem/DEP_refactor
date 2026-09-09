@@ -15,7 +15,7 @@ import sys
 base_folder = os.path.dirname(__file__) #folder that contains the script
 sys.path.append(os.path.join(base_folder,'..','lookup'))
 sys.path.append(os.path.join(base_folder,'..',))
-import geo_utils
+#import geo_utils
 import paths
 
 import argparse
@@ -264,11 +264,11 @@ def plot_table_norag(table,page=1, landscape=False):
     
     
     #set DWS exceedance
-    for i,c in enumerate(table.iloc[10,4:].to_list()):
+    for i,c in enumerate(table.iloc[10,3:].to_list()):
         if c.startswith('-'):
             continue
         if float(c.split(' ')[0]) > float(pfas_norag['SUM OF 6'][0]):
-            tbl[12,i+3].set_facecolor(dws_color)
+            tbl[10,i+3].set_facecolor(dws_color)
         
     # set RAG and MCL exceedance
     for j,p in enumerate(pfas_norag):
