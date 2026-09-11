@@ -7,7 +7,6 @@ Created on Mon Jul 28 16:24:43 2025
 
 compare sample results to RAGs using EDD
 
-update to use eed_compomunds.xlsx
 
 """
 
@@ -19,14 +18,14 @@ os.system("") #makes color work for some reason
 import sys
 base_folder = os.path.dirname(__file__) #folder that contains the script
 sys.path.append(os.path.join(base_folder,'lookup'))
-import historic_rags as rg
+import rags as rg
 import edd_utils as edd
 import paths 
 import make_site as make
 
 import glob 
 import numpy as np
-import pandas as pd
+
 
 
 ## If passed a sample number it will do just the the one. If it is passed 
@@ -45,25 +44,6 @@ class Color:
         RESET = '\033[0m'  # Resets all formatting (color, bold, etc.)
 
 
-
-def get_rag_from_xlsx(df,medium,compound):
-    # medium (gw, soil_leach, soil_resd)
-    rr = df[df['compound'] == compound][medium].iloc[0]
-    return rr
-
-def load_rags_from_xlsx(test):
-    compound_df = pd.read_excel(paths.compounds_xls)
-    if test == 'soil':
-        compounds = compound_df[compound_df['eph'] == 1]['compound'].tolist()
-        compounds += compound_df[compound_df['vph'] == 1]['compound'].tolist()
-        print(compounds)
-        compounds = list(set(compounds))
-    elif test == 'pfas_soil':
-        compounds = compound_df[compound_df['pfas'] == 1]['compound'].tolist()
-    else:
-        compounds = compound_df[compound_df[test] == 1]['compound'].tolist()
-    compounds.sort() 
-    return compound_df,compounds
 
 def display_rags(test):
 
@@ -91,7 +71,7 @@ def display_rags(test):
         test = 'pfas'
         medium = 'soil'
     elif test == 'soil':
-        title = 'Petroleum leaching to groundwater and Residential Soil (ppm)'
+        title = 'Petroleum leaching to groundwater (ppm)'
         medium = 'soil'
     elif test == 'vph':
         title = 'VPH RAGs (ppb)'
@@ -109,36 +89,40 @@ def display_rags(test):
         title = 'Landfill Longlist RAGs (ppb)'
         medium = 'gw'
     
-    # laod edd_compomund.xlsx
-    compound_df,compounds = load_rags_from_xlsx(test)
-    
-    
-    
     if medium == 'gw' :
+        compounds = rg.test_compounds[test]
+        compounds.sort()     
         rags = []
         for compound in compounds:
-            rags.append( get_rag_from_xlsx(compound_df,medium,compound) )
+            rags.append(rg.all_gw[compound])
         print('')
         print(title)
         print('')
         for i in range(len(compounds)):
-            print('{:30}{:<8}'.format(compounds[i],rags[i]))
+            print('{:30}{:8}'.format(compounds[i],rags[i]))
         print('')
         print('')
         return
     
     elif medium == 'soil' :
+        if test == 'soil':
+            compounds = rg.test_compounds['eph']+rg.test_compounds['vph']
+
+            compounds = list(set(compounds))
+        else:
+            compounds = rg.test_compounds[test]
+        compounds.sort()
         rags = []
         rag2 = []
         for compound in compounds:
-            rags.append(get_rag_from_xlsx(compound_df,'soil_leach',compound))
-            rag2.append(get_rag_from_xlsx(compound_df,'soil_resd',compound))
+            rags.append(rg.all_ltg[compound])
+            rag2.append(rg.all_soil_resd[compound])
         print('')
         print(title)
         print('')
         print('{:30}{:10}{:10}'.format('','leach','residential'))
         for i in range(len(compounds)):
-            print('{:30}{:<10}{:<10}'.format(compounds[i],rags[i],rag2[i]))
+            print('{:30}{:10}{:10}'.format(compounds[i],rags[i],rag2[i]))
         print('')
         print('')
         
@@ -210,16 +194,15 @@ def print_haz_index(index,con):
         else:
             print('Hazard Index: {:.2f}\n'.format(index) )
             
-def print_pfas_soil(results,compound_df):
-    # leach = rg.pfas_soil_leach
-    # soil = rg.pfas_soil_resd
+def print_pfas_soil(results):
+    leach = rg.pfas_soil_leach
+    soil = rg.pfas_soil_resd
     
     print('{:40}{:10}{}'.format('','soil','soil'))
     print('{:30}{:10}{:10}{}\n'.format('','con.','RAG/Resd','RAGs/Leach'))
     for resul in results:
-        rag1 = get_rag_from_xlsx(compound_df,'soil_resd',resul[0])
-        rag2 = get_rag_from_xlsx(compound_df,'soil_leach',resul[0])
-        
+        rag1 = soil[resul[0]]
+        rag2 = leach[resul[0]]
         if( resul[1] == 'ND') or (rag1 == '-'):
             print('{:30}{:10}{:10}{}'.format(resul[0], resul[1], rag1, rag2))
         elif float(resul[1]) > float(rag1) :
@@ -265,8 +248,7 @@ def main(args):
                 print_haz_index(index,con)
             if 'pfas_soil' in test:
                 results = edd.edd_compound_parse(df,args.sample,'pfas')
-                compound_df,_ = load_rags_from_xlsx('pfas')
-                print_pfas_soil(results,compound_df)
+                print_pfas_soil(results)
             if 'eph_soil' in test:
                 if args.ltg:
                     results = edd.edd_compound_parse(df,args.sample,'eph',medium='ltg')
@@ -409,8 +391,10 @@ if __name__=="__main__":
     helps = ('Can be 1) a sample number with subsample 2) location shortname ' +
             'or 3) to print just RAGS the following keywords can be used [pfas,pfas_soil,soil,vph,eph,history,pot,landfill_short,landfill_long,voc]')
 
+    
+    
     parser.add_argument('sample' , nargs= '?' , default = None, help=helps)
-    parser.add_argument('-ltg' , action='store_true', help='if test is eph_soil, use leaching to groundwater RAG')
+    parser.add_argument('-ltg' , action='store_true', help='if test is soil, use leaching to groundwater RAG')
     
     args = parser.parse_args()
     main(args)
