@@ -25,7 +25,7 @@ def main(args):
     
     locs = geo_utils.find_pfas_locations(args.seq)
     
-    if len(locs) > 1:
+    if (len(locs) > 1) or (len(locs) == 0):
         plural = 's'
     else:
         plural = ''

@@ -25,9 +25,9 @@ import edd_compounds as edd_comp
 
 
 def brwmtable2edd(pth,edd_num,site):
-    #convert BRWM table (generated from egad export)
+    # convert BRWM table (generated from egad export)
     # into an 'edd' that can be used with edd parser tools
-    # pth : path to brwm table .xls
+    # pth : path to brwm table .xlsx
     
     data = pd.read_excel(pth)
     data = data.fillna('NA')
