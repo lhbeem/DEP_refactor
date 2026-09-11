@@ -263,7 +263,7 @@ def main(args):
         for i,conn in enumerate(con):
             if conn == 0:
                 continue
-            pl.text(sx[i]/1000,sy[i]/1000,' {}'.format(conn))
+            pl.text(sx[i]/1000,sy[i]/1000,' {}'.format(conn),weight='bold')
     
     
     # plot contours
