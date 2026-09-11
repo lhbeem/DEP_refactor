@@ -62,8 +62,6 @@ def find_site_point(seq, p=False):
     if p:
         if len(pt) == 1:
             print('\n{} {} {}\n'.format( pt['MEDEP_S_19'].to_list()[0] , int(float(pt['MEDEP_Si_6'].to_list()[0])),int(float(pt['MEDEP_Si_7'].to_list()[0]))))
-            return [pt['MEDEP_Si_6'].to_list()[0],pt['MEDEP_Si_7'].to_list()[0]]
-        
         elif len(pt) > 1:
             print('\nMultiple points found, non unique sequence number\n')
             print(pt)
@@ -71,7 +69,7 @@ def find_site_point(seq, p=False):
             print('\nNo site point found for {}\n'.format(seq))
             
     else:
-        return pt
+        return [pt['MEDEP_Si_6'].to_list()[0],pt['MEDEP_Si_7'].to_list()[0]]
         
 def find_site_locations(seq,p=False):
     # list the sample location points for a given sequence number
