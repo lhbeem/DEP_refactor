@@ -103,10 +103,6 @@ def main(args):
         # presume a string
         typ_df = gpd.read_file( paths.egad_type )
         search = args.siteID.upper()
-        if args.s is None:
-            search2 = None
-        else:
-            search2 = args.s.upper()
         print('')
         for names in df.MEDEP_S_19:
             if names is None:
@@ -120,11 +116,7 @@ def main(args):
                 state = row.MEDEP_S_23.iloc[0]
                 typ = get_type(seq,typ_df)
                 
-                if search2 is not None:
-                    if np.any( [True for item in [name,address,town,state,typ] if search2 in item] ):
-                        print('{:40} {}{:8}{} {:45} {}, {}, {}'.format(name,Color.GREEN,seq, Color.RESET,typ, address, town, state ))
-                else:
-                    print('{:40} {}{:8}{} {:45} {}, {}, {}'.format(name,Color.GREEN,seq, Color.RESET,typ, address, town, state ))
+                print('{:40} {}{:8}{} {:45} {}, {}, {}'.format(name,Color.GREEN,seq, Color.RESET,typ, address, town, state ))
         
         print('')
         
@@ -134,7 +126,6 @@ if __name__=="__main__":
     parser= argparse.ArgumentParser()
 
     parser.add_argument('siteID' ,  help='SiteID or search string')
-    parser.add_argument('-d' , action='store_true',  help='print site description if present, only is sequence number provided')
-    parser.add_argument('-s', help='secondary search term')
+    parser.add_argument('-d' , action='store_true',  help='print site description if present, only if sequence number provided')
     args = parser.parse_args()
     main(args)
