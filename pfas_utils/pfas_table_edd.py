@@ -8,6 +8,9 @@ PFAS table results for closure document
 
 from pandas.plotting import table 
 merge cells: https://stackoverflow.com/questions/53783087/double-header-in-matplotlib-table
+
+
+adding common geology parsing. 
 """
 
 import os
@@ -99,7 +102,10 @@ def make_table_soil(data):
     location_names.sort()
     date = []
     for location in location_names:
-        date_ob = datetime.datetime.strptime(data[data.SAMPLE_POINT_NAME == location].SAMPLE_DATE.iloc[0],'%m/%d/%Y')
+        if args.c:
+            date_ob = data[data.SAMPLE_POINT_NAME == location].SAMPLE_DATE.iloc[0]
+        else:
+            date_ob = datetime.datetime.strptime(data[data.SAMPLE_POINT_NAME == location].SAMPLE_DATE.iloc[0],'%m/%d/%Y')
         date.append(date_ob.strftime('%m/%d/%Y'))
     
     table = pd.DataFrame(['','2023 RAG\nLTG','2023 RAG\nResidential']+location_names).T
@@ -109,25 +115,31 @@ def make_table_soil(data):
         cons = []
         con = []
         long = short2long(p)
+        
         for location in location_names:
             location_data = data[data.SAMPLE_POINT_NAME == location]
             for lon in long:
                 try:
-                    con.append( str(location_data[location_data.PARAMETER_NAME ==lon].CONCENTRATION.iloc[0]))
-
+                    if args.c:
+                        con.append( str(location_data[location_data.PARAMETER ==lon].CONCENTRATION.iloc[0]))
+                    else:
+                        con.append( str(location_data[location_data.PARAMETER_NAME ==lon].CONCENTRATION.iloc[0]))
                 except:
                     continue
         for c in con:
+            
             if c == 'nan':
                 cons.append('-')
             elif c.startswith('ND'):
                 cons.append('-')
+            elif c == '0.0':    #common geology uses zero when Non-detect
+                cons.append('-')
             else:
                 cons.append(c)
-        
-        
+            
+       
         row = [p,soil[p][0],soil[p][1]]+cons
-
+        
         table.loc[len(table)] = row
         
     return table
@@ -295,12 +307,15 @@ def main(args):
             data = data[data.LAB_SAMPLE_ID.str.startswith('L')]
 
         except:
-            data = gpd.read_file(paths.edd +'/' + args.sample+'_m60.xlsx')
+            if args.c:
+                data = gpd.read_file(paths.common +'/' + args.sample+'_m60.xlsx',layer='Data')
+            else:
+                data = gpd.read_file(paths.edd +'/' + args.sample+'_m60.xlsx')
         data = data[data.SAMPLE_TYPE == 'SL']
         data = data.sort_values(by='SAMPLE_POINT_NAME')
         point_names = set(data.SAMPLE_POINT_NAME)
         
-        print(len(point_names))
+        print('Number of sample locations:', len(point_names))
         if len(point_names) < 6:
             table = make_table_soil(data)
             plot_table_soil(table)
@@ -324,5 +339,6 @@ if __name__=="__main__":
 
     parser.add_argument('sample' , help='sample number')
     parser.add_argument('-s', action='store_true', help='make table for soil')
+    parser.add_argument('-c', action='store_true', help='parse a common geology file named consistently with edd but in the data/common folder')
     args = parser.parse_args()
     main(args)

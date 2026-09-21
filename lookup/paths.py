@@ -17,6 +17,7 @@ projects = os.path.join(documents, 'Projects')
 data = os.path.join(documents, 'data')
 notes = os.path.join(base_folder , '..' , '..', '..', 'notes')
 edd = data +'/edd'
+common = data +'/common'
 pdf = data +'/pace_pdf' #pace pdfs
 xRoy = 'H:/DEP_All_Users/BRWM INVOICES/_DIVISION/TECH SERVICES/xRoy Louise'
 aerial_images = data +'/aerial_image'
