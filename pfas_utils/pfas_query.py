@@ -66,7 +66,7 @@ def main(args):
         
         for p in rags.compound: # compound list 
             cons = ''
-            rag = rags[rags.compound == p].rag_gw.tolist()[0]
+            rag = rags[rags.compound == p].gw.tolist()[0]
             if rag == '-':
                 rag = np.nan
             MCL = rags[rags.compound == p].EPA_MCL.tolist()[0]
