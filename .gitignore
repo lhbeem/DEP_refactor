@@ -1,8 +1,6 @@
 __pycache__
 lookup/__pycache__
 figures
-lookup/tracking.pkl
-ookup/pfas_source.pkl
 lookup/location_list.xlsx
 lookup/images
 letters
@@ -14,3 +12,4 @@ site_specific/state_wide_soil/all_compounds/
 *pdf
 *png
 *.pptx
+*.pkl
