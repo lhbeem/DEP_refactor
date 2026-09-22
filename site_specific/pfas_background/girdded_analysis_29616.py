@@ -21,7 +21,9 @@ from matplotlib.patches import Patch
 outline = gpd.read_file(paths.me_outline)
 outline_bounds = outline.total_bounds
 
-x,y = np.meshgrid(np.arange(outline_bounds[0],outline_bounds[2],1000), np.arange(outline_bounds[1],outline_bounds[3],1000))
+
+dd = 1000# grid spacing in meters
+x,y = np.meshgrid(np.arange(outline_bounds[0],outline_bounds[2],dd), np.arange(outline_bounds[1],outline_bounds[3],dd))
 y = np.flipud(y)
 
 #%%import gw results both lD1600 and non-LD1600
@@ -46,18 +48,18 @@ else:
         i = i[1]
         if i[compound] == '':
             continue
-        if i[compound].startswith('ND'):
-            background = pd.concat([background, pd.DataFrame(i)], ignore_index=True)
-            continue
-        con = float(i[compound].split(' ')[0])
-        if con < threshold:
-           background = pd.concat([background, pd.DataFrame(i)], ignore_index=True) 
+        elif i[compound].startswith('ND'):
+            background = pd.concat([background, pd.DataFrame(i)], ignore_index=True, axis = 1)
+        else:
+            con = float(i[compound].split(' ')[0])
+            if con < threshold:
+                background = pd.concat([background, pd.DataFrame(i)], ignore_index=True, axis = 1 ) 
         
-    
+background = background.T
     
 
 
-#%%
+#%%  calculate distance to nearest subthreshold location
 dist = np.ones(x.shape) * 1e6
 il = np.ones(x.shape) * np.nan
 
@@ -74,19 +76,19 @@ for i,pt in enumerate(background.iterrows()):
 fig = pl.figure(1)
 fig.clf()
 ax = fig.add_subplot(111)
-pl.imshow(dist/1000,extent=outline_bounds[[0,2,1,3]],vmax=100)
+pl.imshow(dist/1000,extent=outline_bounds[[0,2,1,3]],vmax=120)
 for out in outline.iterrows():
     xy = np.array(out[1].geometry.coords)
     pl.plot(xy[:,0],xy[:,1],'k')
 
 cb = pl.colorbar()
-cb.set_label('Distance from nearest Sum of 6 ND (m)')
+cb.set_label('Distance from nearest {} ND (km)'.format(compound))
 pl.plot(color='r',ax=ax,markersize=1) 
 
 pl.xlabel('Easting (m)')
 pl.ylabel('Northing (m)')
 
-#%% fig 2
+#%% calculate distance to nearest observation
 
 all_dist = np.ones(x.shape) * 1e6
 all_il = np.ones(x.shape) * np.nan
@@ -100,7 +102,7 @@ for i,pt in enumerate(all_gw.iterrows()):
     il[ind] = pt.EGAD_SITE_
 
 #%%
-dd = 200 # representative distance 
+dd = 2000 # representative distance 
 dist2 = np.ones(dist.shape) * .5
 dist2[dist < dd] = 0
 dist2[ (dist > 0) & (all_dist > dd) ] = 1
@@ -122,6 +124,6 @@ handles = [Patch(facecolor=[0.267, 0.004, 0.329], edgecolor='none', label='ND wi
            Patch(facecolor=[0.993, 0.906, 0.143], edgecolor='none', label='No sample within distance')]
                  
 
-ax.legend(handles=handles, title="Distance = {} km".format(dd/1000), loc='right',bbox_to_anchor = (1.55,0.5))                
+ax.legend(handles=handles, title="Distance = {} km".format(dd/1000), loc='right',bbox_to_anchor = (1.8,0.5))                
 
             
