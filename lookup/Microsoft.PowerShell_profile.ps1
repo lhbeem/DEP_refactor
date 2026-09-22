@@ -14,6 +14,7 @@ function coc { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents
 function site_pt { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\egad_site_pt.py" @args }
 function ll2utm { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\ll2utm.py" @args}
 function ec {& python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\ec.py" @args}
+function tax_map { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\tax.py" @args}
 
 function load_profile {. $profile ;
 			Copy-Item -Path "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1" -Destination "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\lookup\"} 
@@ -87,7 +88,7 @@ function search { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Docume
 # function sop { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\sop.py" @args}
 # function rule { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\rules.py" @args}
 # Set-Alias -name rules -Value rule
-function open_edd {& python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\open_edd.py" @args}
+function open_edd {& python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\open_edd.py" @args}
 
 
 ## maps 
@@ -100,7 +101,7 @@ function site_map { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Docu
 
 function egad_desc { echo "Use egad -d instead" }
 # function all_folder { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\omni_folder.py" @args }
-function tax_map { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\tax.py" @args}
+# function tax_map { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\tax.py" @args}
 function azimuth { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\azimuth.py" @args}
 
 
