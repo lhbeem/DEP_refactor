@@ -31,6 +31,7 @@ soils ={
 'Em': ['Elmwood','Coarse Loam over clay','Moderately Well','Glaciomarine/lacustrine'],
 'Gp': ['Gravel Pit','','',''],
 'He': ['Hermon','Sandy Skeletial','Somewhat Excessively','Till:granite,gniess,shist'],
+'Hf': ['Hartland','Coarse Silt', 'Well', 'Glaciomarine/lacustrine:very fine sand silt'],
 'Hl': ['Hinckley','Sandy Skeletial','Excessively Well','Glaciofluvial'],
 'Hn': ['Hinckley (Hl) - Suffield (Su) Complex. Hl is 60%','','',''],
 'Ho': ['Howland','','',''],
