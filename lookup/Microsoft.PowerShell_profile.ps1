@@ -21,10 +21,10 @@ function load_profile {. $profile ;
 
 function pfas_setup { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pfas_utils\pfas_data_setup.py" @args}
 function pfas_map   { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pfas_utils\pfas_map.py" @args}
-function pfas_table { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pfas_utils\pfas_table.py" @args}
-function pfas_table_edd { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pfas_utils\pfas_table_edd.py" @args}
+function pfas_table { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pfas_utils\pfas_table_combine.py" @args}
 function haz { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pfas_utils\haz_index.py" @args}
 function pfas_query { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pfas_utils\pfas_query.py" @args}
+function all_pfas_query { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\site_specific\LD1600_report\all_pfas_query.py" @args}
 
 
 function sop { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\sop.py" @args}
@@ -67,7 +67,8 @@ function arc {MSTSC "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\rdp
 function pass {Set-Clipboard -Value "j,h%&x-P7<7WtC&}"}
 function pass_or {Set-Clipboard -Value "2p7n^D0b1,!)m-Y"}
 
-function smro_hunt ($key) { ls "H:\BRWM\BRWM Databases\FILE ROOM\TechServSpillClosure\SMRO" | sls $key}
+function smro_hunt ($key) { ls "H:\BRWM\BRWM Databases\FILE ROOM\TechServSpillClosure\SMRO" | % {$_.FullName} | sls $key}
+function ld1600_hunt ($key) { ls -Depth 1 "H:\BRWM\PFAS - LD 1600\Sites" | % {$_.FullName} | sls $key}
 
 function prism {Start-Process "https://wd5-identity.myworkday.com/wday/authgwy/maine/upc/login"}
 
