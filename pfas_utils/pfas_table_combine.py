@@ -309,6 +309,10 @@ def plot_table_soil(table,page=1):
     for j in range(3,table.shape[1]):
         for i in range(0,table.shape[0]):
             tbl[i,j].set_width(.13)
+    for i in range(0,table.shape[0]):
+        tbl[i,0].set_width(.125)
+        tbl[i,1].set_width(.125)
+        tbl[i,2].set_width(.125)
     
     # set colors
     ltg_color = np.array([255,255,191]) / 255
