@@ -21,12 +21,15 @@ import subprocess
 
 def main(args):
     
-    # get site point 
-    x,y = geo_utils.find_site_point(args.seq)
-    
-    if x is None:
-        print ('site point not found for {}'.format(args.seq))
-        exit()
+    # get site point
+    if args.xy is not None:
+        x = args.xy[0]
+        y = args.xy[1]
+    else:
+        x,y = geo_utils.find_site_point(args.seq)
+        if x is None:
+            print ('site point not found for {}'.format(args.seq))
+            exit()
     
     # print town
     town = geo_utils.pt2town(x, y)
@@ -95,7 +98,8 @@ def main(args):
 if __name__=="__main__":
     parser= argparse.ArgumentParser()
 
-    parser.add_argument('seq' , type = int , help='sequence number of site to run')
-
+    parser.add_argument('-seq' , type = int , help='sequence number of site to run')
+    parser.add_argument('-xy' , nargs = 2, help='xy (epsg26919), superseeds seq')
+    
     args = parser.parse_args()
     main(args)
