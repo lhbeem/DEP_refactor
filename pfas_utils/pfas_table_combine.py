@@ -28,22 +28,9 @@ import datetime
 
 
 
-# columns are 2023 RAGs Residential, Interim Drinking water, EPA MCL
-pfas = {'PFOS' : ['40', '','4','PFOS'],
-        'PFOA' : ['60', '','4','PFOA'],
-        'PFBS' : ['6000', '','10','PFBS'],
-        'PFBA': ['19000','','','PFBA'],
-        'PFHXS': ['390', '','10','PFHXS'],
-        'PFHXA': ['9900','', '','PFHXA'],
-        'PFNA': ['59', '','10','PFNA'],
-        'PFHPA': ['', '','','PFHPA'] , # part of sum of six
-        'PFDA': ['','','','PFDA'], # part of sum of six 
-        'HFPO-DA': ['60','','10','HFPO_DA'],
-        'SUM OF 6': ['','20','','SUM_OF_6_P'],
-        }
+# columns are Interim Drinking water, EPA MCL
 
-
-pfas_norag = {'PFOS' : ['','4','PFOS'],
+pfas_gw = {'PFOS' : ['','4','PFOS'],
         'PFOA' : ['','4','PFOA'],
         'PFBS' : ['','10','PFBS'],
         'PFHXS': ['','10','PFHXS'],
@@ -55,7 +42,7 @@ pfas_norag = {'PFOS' : ['','4','PFOS'],
         }
 
 # columns are 2023 RAGs LTG, 2023 RAGs Residential 
-soil = {'PFOS'      :['1','170'],
+pfas_soil = {'PFOS'      :['1','170'],
         'PFOA'      :['17','260'],
         'HFPO-DA'   :['0.81','320'],
         'PFBA'      :['36','110000'],
@@ -86,9 +73,9 @@ def make_table_gw_gis(data):
     
     table.loc[len(table)] = ['Date']+['']*2+date
     
-    for p in pfas_norag:
+    for p in pfas_gw:
         cons = []
-        con =  data[pfas_norag[p][2]].to_list()
+        con =  data[pfas_gw[p][2]].to_list()
         for c in con:
             if c.startswith('ND'):
                 cons.append('-')
@@ -96,7 +83,7 @@ def make_table_gw_gis(data):
                 cons.append(c.split(' ')[0])
         
         
-        row = [p,pfas_norag[p][0],pfas_norag[p][1]]+cons
+        row = [p,pfas_gw[p][0],pfas_gw[p][1]]+cons
         table.loc[len(table)] = row
     return table
 
@@ -114,7 +101,7 @@ def make_table_gw_edd(data):
     table = pd.DataFrame(['','Interim\nDWS','EPA\nMCL']+location_names).T
     table.loc[1] = ['Date']+['']*2+date
     
-    for p in pfas_norag:
+    for p in pfas_gw:
         cons = []
         con = []
         long = short2long(p)
@@ -142,7 +129,7 @@ def make_table_gw_edd(data):
                 cons.append(c)
             
        
-        row = [p,pfas_norag[p][0],pfas_norag[p][1]]+cons
+        row = [p,pfas_gw[p][0],pfas_gw[p][1]]+cons
         table.loc[len(table)] = row
         
     return table
@@ -157,9 +144,9 @@ def make_table_soil_gis(data):
     
     table.loc[len(table)] = ['Date']+['']*2+date
     
-    for p in soil:
+    for p in pfas_soil:
         cons = []
-        con =  data[pfas[p][3]].to_list()
+        con =  data[pfas_soil[p][3]].to_list()
         for c in con:
             if c.startswith('ND'):
                 cons.append('-')
@@ -167,7 +154,7 @@ def make_table_soil_gis(data):
                 cons.append(c.split(' ')[0])
         
         
-        row = [p,soil[p][0],soil[p][1]]+cons
+        row = [p,pfas_soil[p][0],pfas_soil[p][1]]+cons
         table.loc[len(table)] = row
         
     return table
@@ -187,7 +174,7 @@ def make_table_soil_edd(data):
     
     table.loc[len(table)] = ['Date']+['']*2+date
     
-    for p in soil:
+    for p in pfas_soil:
         cons = []
         con = []
         long = short2long(p)
@@ -214,7 +201,7 @@ def make_table_soil_edd(data):
                 cons.append(c)
             
        
-        row = [p,soil[p][0],soil[p][1]]+cons
+        row = [p,pfas_soil[p][0],pfas_soil[p][1]]+cons
         
         table.loc[len(table)] = row
         
@@ -264,12 +251,10 @@ def plot_table_gw(table,page=1, landscape=False):
     
     
     # set colors
-    # rag_color = np.array([255,255,191]) / 255
     dws_color = np.array([161,215,106]) / 255
     mcl_color = np.array([252,141,89]) / 255
     
     for i in range(0,table.shape[0]):
-        # tbl[i,1].set_facecolor(rag_color)
         tbl[i,1].set_facecolor(dws_color)
         tbl[i,2].set_facecolor(mcl_color)
     
@@ -279,20 +264,17 @@ def plot_table_gw(table,page=1, landscape=False):
     for i,c in enumerate(table.iloc[10,3:].to_list()):
         if c.startswith('-'):
             continue
-        if float(c.split(' ')[0]) > float(pfas_norag['Sum of 6'][0]):
+        if float(c.split(' ')[0]) > float(pfas_gw['Sum of 6'][0]):
             tbl[10,i+3].set_facecolor(dws_color)
         
     # set RAG and MCL exceedance
-    for j,p in enumerate(pfas_norag):
+    for j,p in enumerate(pfas_gw):
         I = j + 2
         for i,c in enumerate( table.iloc[I , 3:].to_list() ):
             if c.startswith('-'):
                 continue
-            # if pfas[p][0] != '':
-            #     if float(c.split(' ')[0]) > float(pfas[p][0]):
-            #         tbl[I,i+4].set_facecolor(rag_color)
-            if pfas_norag[p][1] != '':
-                if float(c.split(' ')[0]) > float(pfas_norag[p][1]):
+            if pfas_gw[p][1] != '':
+                if float(c.split(' ')[0]) > float(pfas_gw[p][1]):
                     tbl[I,i+3].get_text().set_color(mcl_color)
                     tbl[I,i+3].get_text().set_fontweight('bold')
     
@@ -324,7 +306,9 @@ def plot_table_soil(table,page=1):
         tbl[0,i].set_height(.15)
     for i in range(3,table.shape[1]):
          tbl[0,i].get_text().set_rotation(90)
-    
+    for j in range(3,table.shape[1]):
+        for i in range(0,table.shape[0]):
+            tbl[i,j].set_width(.13)
     
     # set colors
     ltg_color = np.array([255,255,191]) / 255
@@ -337,16 +321,16 @@ def plot_table_soil(table,page=1):
     
     
     #set ltg and resd exceedance        
-    for j,p in enumerate(soil):
+    for j,p in enumerate(pfas_soil):
         I = j + 2
         for i,c in enumerate( table.iloc[I , 3:].to_list() ):
             if c.startswith('-'):
                 continue
             
-            if float(c.split(' ')[0]) > float(soil[p][0]):
+            if float(c.split(' ')[0]) > float(pfas_soil[p][0]):
                 tbl[I,i+4].set_facecolor(ltg_color)
             
-            if float(c.split(' ')[0]) > float(soil[p][1]):
+            if float(c.split(' ')[0]) > float(pfas_soil[p][1]):
                 tbl[I,i+4].get_text().set_color(res_color)
                 tbl[I,i+4].get_text().set_fontweight('bold')
     
