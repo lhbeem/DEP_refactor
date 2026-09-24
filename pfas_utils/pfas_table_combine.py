@@ -297,7 +297,7 @@ def plot_table_gw(table,page=1, landscape=False):
                     tbl[I,i+3].get_text().set_fontweight('bold')
     
     
-    outfile = base_folder +'/../figures/{}_{}'.format(args.site,page)
+    outfile = base_folder +'/../figures/pfas_gw_table_{}_{}'.format(args.site,page)
     for ext in ['.png','.pdf']:
         fig.savefig(outfile + ext)
     
@@ -351,7 +351,7 @@ def plot_table_soil(table,page=1):
                 tbl[I,i+4].get_text().set_fontweight('bold')
     
     pl.tight_layout()
-    outfile = base_folder +'/../figures/{}_soil_{}'.format(args.site,page)
+    outfile = base_folder +'/../figures/pfas_soil_table_{}_{}'.format(args.site,page)
     for ext in ['.png','.pdf']:
         fig.savefig(outfile + ext)
         print('saving: {}'.format(outfile+ext))
