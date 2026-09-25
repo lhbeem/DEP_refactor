@@ -146,7 +146,11 @@ def make_table_soil_gis(data):
     
     for p in pfas_soil:
         cons = []
-        con =  data[pfas_soil[p][3]].to_list()
+        if p  == 'HFPO-DA':
+            col_name = 'HFPO_DA'
+        else:
+            col_name = p
+        con =  data[col_name].to_list() #gw dict has the column names used in GIS layer
         for c in con:
             if c.startswith('ND'):
                 cons.append('-')
@@ -226,7 +230,7 @@ def plot_table_gw(table,page=1, landscape=False):
     
     if landscape:
         for i in range(0,table.shape[1]):
-            tbl[0,i].set_height(.26)
+            tbl[0,i].set_height(.32)
         for i in range(3,table.shape[1]):
             tbl[0,i].get_text().set_rotation(90)
         for i in range(0,table.shape[0]):
@@ -327,16 +331,17 @@ def plot_table_soil(table,page=1):
     #set ltg and resd exceedance        
     for j,p in enumerate(pfas_soil):
         I = j + 2
+        
         for i,c in enumerate( table.iloc[I , 3:].to_list() ):
             if c.startswith('-'):
                 continue
             
             if float(c.split(' ')[0]) > float(pfas_soil[p][0]):
-                tbl[I,i+4].set_facecolor(ltg_color)
+                tbl[I,i+3].set_facecolor(ltg_color)
             
             if float(c.split(' ')[0]) > float(pfas_soil[p][1]):
-                tbl[I,i+4].get_text().set_color(res_color)
-                tbl[I,i+4].get_text().set_fontweight('bold')
+                tbl[I,i+3].get_text().set_color(res_color)
+                tbl[I,i+3].get_text().set_fontweight('bold')
     
     pl.tight_layout()
     outfile = base_folder +'/../figures/pfas_soil_table_{}_{}'.format(args.site,page)
@@ -357,12 +362,13 @@ def main(args):
 
         if args.s:
             data = gpd.read_file(paths.soil_polygons)
-            data = data[data['EGAD_SITE_'] == args.site]
+            data = data[data['EGAD_SITE_'] == int(args.site)]
             data = data.sort_values(by='FEATURE_NA')
         else:
             data = gpd.read_file(paths.sample_locations)
-            data = data[data['EGAD_SITE_'] == args.site]
+            data = data[data['EGAD_SITE_'] == int(args.site)]
             data = data.sort_values(by='FEATURE_NA')   
+        
         no_samps = len(data)
     
     elif args.source =='edd':
@@ -400,7 +406,7 @@ def main(args):
         print('No sample locations: Table not printed.')
         print('')
     
-    elif no_samps < 7: # one table portrait
+    elif no_samps < 6: # one table portrait
         if args.s:
             if args.source == 'gis':
                 table = make_table_soil_gis(data)

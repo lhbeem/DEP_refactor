@@ -291,8 +291,8 @@ def main(args):
     ax.ticklabel_format(axis='x', useOffset=False)
     ax.ticklabel_format(axis='y', useOffset=False)
 
-    output = r'C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\PFAS_comprehensive\maps\{}_{}_{:.0f}m.pdf'.format(args.seq,compound,args.dist)
-    output2 = r'C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\PFAS_comprehensive\maps\{}_{}_{:.0f}m.png'.format(args.seq,compound,args.dist)
+    output = r'C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\figures\{}_{}_{:.0f}m.pdf'.format(args.seq,compound,args.dist)
+    output2 = r'C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\figures\{}_{}_{:.0f}m.png'.format(args.seq,compound,args.dist)
     fig.savefig(output)
     fig.savefig(output2, dpi=300)
     print('saved:{}'.format(output))
