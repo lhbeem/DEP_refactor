@@ -41,6 +41,8 @@ def get_maplot_from_address(args):
     print(address)
   
 def get_ml(town,maplot):
+    if town.lower() in ['waterboro']:
+        return None,None
     if town.lower() in ['windham','lisbon','harpswell']:
         #mmmlll#######
         m = maplot[:3]
@@ -113,7 +115,12 @@ def main(args):
     ROI = shapely.Polygon(ROI)
     parcel = gpd.read_file(paths.tax, mask= ROI)
     
-    town = parcel['TOWN'][0]
+    try:
+        town = parcel['TOWN'][0]
+    except:
+        print('town not in parcel map or point outside of map bounds; check point location\n\n')
+        exit()
+    
     maplot = parcel['MAP_BK_LOT'][0]
     address = parcel['PROP_LOC'][0]
     
@@ -123,7 +130,7 @@ def main(args):
     
     
     m,l = get_ml(town,maplot)
-    
+
     print('map:     {}'.format(m))
     print('lot:     {}'.format(l))
     print('')    
