@@ -73,8 +73,21 @@ def get_site_point(seq):
 
 def main(args):
     df = gpd.read_file( paths.egad_sites ) 
-    
-    if args.siteID.isdecimal():
+
+    if args.town:
+        df = df[df.MEDEP_S_21 == args.siteID.upper()]
+        df2 = gpd.read_file( paths.egad_type )
+        for row in df.iterrows():
+            row = row[1]
+            name = row.MEDEP_S_19
+            seq  = row.MEDEP_Site
+            address = row.MEDEP_S_20
+            town = row.MEDEP_S_21
+            state = row.MEDEP_S_23
+            typ = get_type(seq,df=df2)
+            print('{:50} {}{:8}{} {:30} {}, {}, {}'.format(name,Color.GREEN,seq, Color.RESET,typ, address, town, state ))   
+            
+    elif args.siteID.isdecimal():
         # assume to be sequence number
         seq = int(args.siteID)
         row = df[df.MEDEP_Site == seq]
@@ -125,7 +138,8 @@ def main(args):
 if __name__=="__main__":
     parser= argparse.ArgumentParser()
 
-    parser.add_argument('siteID' ,  help='SiteID or search string')
+    parser.add_argument('siteID' , help='SiteID or search string')
     parser.add_argument('-d' , action='store_true',  help='print site description if present, only if sequence number provided')
+    parser.add_argument('-town', action='store_true')
     args = parser.parse_args()
     main(args)
