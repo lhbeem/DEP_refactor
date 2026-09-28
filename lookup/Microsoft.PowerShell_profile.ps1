@@ -38,7 +38,6 @@ function shp2gpkg { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Docu
 function new_site { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\site_bg_info.py" @args}
 function all_folder { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\omni_folder.py" @args }
 
-
 ## py distribution testing 
 function py_dist { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\py_distribution.py" @args}
 function test_find { & python "G:\brwm\Lucas_Beem\py\pfas_comprehensive\seq2site.py" @args }
@@ -48,15 +47,9 @@ function test_map  { & python "G:\brwm\Lucas_Beem\py\pfas_comprehensive\pfas_map
 ## Letter Functions (slowly being replaced by refactor)
 function letter_filter { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\letter_generator\gen_filter_letter.py" @args }
 function letter_pfas { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\py\pfas_letter\gen_pfas_letter.py" @args }
-# function invoice { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\letter_generator\gen_pace_stamp.py" @args }
-# function letter { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\letter_generator\gen_letter.py" @args }
-# function letter_final { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\letter_generator\gen_last_sample_letter.py" @args }
-# function letter_close { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\letter_generator\gen_closure_letter.py" @args }
-# function pfas_soil { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\data_parse\pfas_soil_table.py" @args}
 
 
 ## functions that do not utilize python
-
 function proj { cd "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\"}
 function lab_track { start "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\lookup\Spill_lab_tracking.xlsx"}
 function doc2pdf { & "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\WindowsPowerShell\d2p.ps1"}
@@ -75,40 +68,46 @@ function prism {Start-Process "https://wd5-identity.myworkday.com/wday/authgwy/m
 
 
 ## geo commands 
-
-# function shp2gpkg { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\shp2gpkg.py" @args}
-# function allshp	{ & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\all_shp_convert.py"}
 function egad_dist { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\egad_dist.py" @args }
-function pt2town { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\town_from_point.py" @args }
+function pt2town { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pt2town.py" @args }
 
 
 ## document search and manipualtion 
-
-function heic { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\heic_convert.py" @args}
+function heic { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\heic_convert.py" @args}
 function search { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\pdf_search.py" @args}
-# function sop { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\sop.py" @args}
-# function rule { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\rules.py" @args}
-# Set-Alias -name rules -Value rule
 function open_edd {& python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\open_edd.py" @args}
 
-
 ## maps 
-
 function map { &  python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\make_map\make_map.py" @args}
 function site_map { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\make_map\site_map.py" @args }
 
 
 ## other 
-
 function egad_desc { echo "Use egad -d instead" }
-# function all_folder { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\omni_folder.py" @args }
-# function tax_map { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\tax.py" @args}
 function azimuth { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\azimuth.py" @args}
+
+
+
+
+
+
 
 
 
 ### abondoned functions 
 
+# function invoice { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\letter_generator\gen_pace_stamp.py" @args }
+# function letter { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\letter_generator\gen_letter.py" @args }
+# function letter_final { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\letter_generator\gen_last_sample_letter.py" @args }
+# function letter_close { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\letter_generator\gen_closure_letter.py" @args }
+# function pfas_soil { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\data_parse\pfas_soil_table.py" @args}
+# function shp2gpkg { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\shp2gpkg.py" @args}
+# function allshp	{ & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\all_shp_convert.py"}
+# function all_folder { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\omni_folder.py" @args }
+# function tax_map { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\tax.py" @args}
+# function sop { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\sop.py" @args}
+# function rule { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\rules.py" @args}
+# Set-Alias -name rules -Value rule
 # function site  {  & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\site_tracking\sites.py" @args }
 # Set-Alias -name sites -Value site
 #function make_site { python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\site_tracking\sites.py" -make_pickle}
