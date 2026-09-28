@@ -70,6 +70,7 @@ function prism {Start-Process "https://wd5-identity.myworkday.com/wday/authgwy/m
 ## geo commands 
 function egad_dist { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\utils\egad_dist.py" @args }
 function pt2town { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pt2town.py" @args }
+function make_buffer { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\make_buffer.py" @args }
 
 
 ## document search and manipualtion 
