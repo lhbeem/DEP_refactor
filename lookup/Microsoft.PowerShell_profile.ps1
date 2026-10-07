@@ -1,3 +1,7 @@
+## testing
+function buffer { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\Projects\py\buffer.py" @args }
+
+
 ## refactor commands
 
 function juxta { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\juxtapose.py" @args }

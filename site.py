@@ -179,7 +179,7 @@ def main(args):
     # list all info for a given site
     if args.site == 'all':
         list_(df)
-    elif args.site.lower() in ['last','lust','landfill','brown','pfas','vrap','mys','rcra']:
+    elif args.site.lower() in ['last','lust','landfill','brown','pfas','vrap','mys','rcra','unc']:
         sub = df[df.type == args.site.lower()]
         list_(sub)
     else:

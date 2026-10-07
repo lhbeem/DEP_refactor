@@ -87,6 +87,7 @@ for seq in all_seq:
             dd['SAMPLE_DAT'] = date
             dd['FEATURE_NA'] = name
             dd['EGAD_SITE_'] = seq
+            dd['LOCATION'] = sub_sub[sub_sub.SAMPLE_DATE == date].SAMPLE_LOCATION.iloc[0]
             
             # get each PFAS
             for pfas in pfas_columns.keys():

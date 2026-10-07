@@ -170,7 +170,7 @@ if __name__=="__main__":
     parser.add_argument('name' , help = 'site name')
     parser.add_argument('pm' , choices =  get_pm_details('lb',k=True), default = 'lb', help = 'project manager')
     parser.add_argument('date' , help = 'date of sampling')
-    parser.add_argument('add', nargs='?', help = 'address')
+    parser.add_argument('add', nargs='?', default= " ", help = 'address')
     parser.add_argument('-n', action='store_false', help='No potability coc, only applicable with pfas type')
     
 
