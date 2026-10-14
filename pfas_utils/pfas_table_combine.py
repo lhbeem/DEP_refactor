@@ -239,7 +239,7 @@ def plot_table_gw(table,page=1, landscape=False):
             tbl[i,2].set_width(.07)
         for j in range(3,table.shape[1]):
             for i in range(0,table.shape[0]):
-                tbl[i,j].set_width(.085)
+                tbl[i,j].set_width(.1)
     else:
         for i in range(0,table.shape[1]):
             tbl[0,i].set_height(.23)
