@@ -37,6 +37,7 @@ sample_locations = data + '/geo_files/PFAS Groundwater Results.gpkg'
 nonLD_gw = data + '/geo_files/Non-LD1600 PFAS Groundwater Results.gpkg'
 PFOA_soil_pred = data +'/geo_files/PFOA_prediction_model.gpkg'
 PFOS_soil_pred = data +'/geo_files/PFOS_prediction_model.gpkg'
+report_database = data +'/LD1600_report/DRAFT_LD1600Dataset_Cleaned_08Oct2026.xlsx'
 
 # pfas supporting files
 comp_pfas_gw_pkl = projects + '/PFAS_comprehensive/data_files/pfas_gw.pkl'

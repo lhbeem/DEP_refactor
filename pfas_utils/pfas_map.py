@@ -312,7 +312,7 @@ if __name__=="__main__":
     parser.add_argument('--compound','-s', nargs='?', type=str.upper, default = '6',help='Compound to display')
     parser.add_argument('--dist','-d' ,nargs = '?', default = 800, type = float, help='distance from field(s) edge to include in map (meters)')
     parser.add_argument('-c' ,action='store_true', help='Turn on concentration contour plotting')
-    parser.add_argument('-pseq' ,action='store_true', help='turn on plot sequence number for adjacent fields')
+    parser.add_argument('-pseq' ,action='store_true', help='Turn on plot sequence number for adjacent fields')
     parser.add_argument('-dl' ,action='store_true', help='Direct label concentrations')
    
     
