@@ -175,7 +175,8 @@ def shortcut(ID):
              'king' : 'King-Verrier',
              'lowell' : 'lowell cove',
              'steep' : 'Steep falls',
-             'johns' : 'johns store'
+             'johns' : 'johns store',
+             'mousam': 'Lower Mousam Dams',
              }
     
     if ID.lower() in short.keys():
