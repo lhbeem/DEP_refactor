@@ -25,7 +25,7 @@ function load_profile {. $profile ;
 
 function pfas_setup { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pfas_utils\pfas_data_setup.py" @args}
 function pfas_map   { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pfas_utils\pfas_map.py" @args}
-function pfas_table { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pfas_utils\pfas_table_combine.py" @args}
+function pfas_table { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pfas_utils\pfas_table.py" @args}
 function haz { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pfas_utils\haz_index.py" @args}
 function pfas_query { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pfas_utils\pfas_query.py" @args}
 function all_pfas_query { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\site_specific\LD1600_report\all_pfas_query.py" @args}
