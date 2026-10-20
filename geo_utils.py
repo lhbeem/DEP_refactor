@@ -14,6 +14,25 @@ import geopandas as gpd
 import numpy as np
 import paths
 import pyproj 
+from osgeo import gdal,osr
+
+
+
+def arr2geotiff(arr,filename,epsg,ulx,uly,dx,dy,skew = [0,0]):
+    height,width = arr.shape
+    driver = gdal.GetDriverByName("GTiff")
+    dataset = driver.Create(filename, width, height, 1, gdal.GDT_Float32)
+    geotransform = (ulx,dx,skew[0],uly, skew[1], dy)
+    dataset.SetGeoTransform(geotransform)
+
+    srs = osr.SpatialReference()
+    srs.ImportFromEPSG(epsg)  
+    dataset.SetProjection(srs.ExportToWkt())
+
+    band = dataset.GetRasterBand(1)
+    band.WriteArray(arr)
+    dataset.FlushCache()
+    return 
 
 def pt2town(x,y):
     pt = shapely.Point([x,y])
