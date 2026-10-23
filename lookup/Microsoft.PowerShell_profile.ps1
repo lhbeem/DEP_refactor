@@ -71,7 +71,7 @@ function hunt ($folder, $key) { if ($folder -eq "rem"){ ls -Depth 1 "H:\BRWM\Rem
 				}
 
 
-function prism {Start-Process "https://wd5-identity.myworkday.com/wday/authgwy/maine/upc/login"}
+function prism {Start-Process "https://wd5-identity.myworkday.com/wday/authgwy/maine/upc/login"; pass}
 
 
 

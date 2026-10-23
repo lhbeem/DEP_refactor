@@ -50,7 +50,8 @@ def main(args):
     os.startfile(folder_path)
 
 if __name__=="__main__":
-    parser= argparse.ArgumentParser()
+    parser= argparse.ArgumentParser(
+        description="Make a site folder in the C Drive. Will make pfas note template too if a pfas site")
 
     parser.add_argument('name' ,help='Name of folder')
     parser.add_argument('type' ,choices=['pfas','spill','vrap','brown','landfill'], help='Type of site')
