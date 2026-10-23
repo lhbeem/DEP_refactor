@@ -117,7 +117,7 @@ for i,pt in enumerate(all_gw.iterrows()):
 #%%
 rd_stats = []
 
-for rd in [1000,2000,4000,8000,16000]: # representative distance 
+for rd in [200,1000,2000,4000,8000,16000]: # representative distance 
     dist2 = np.ones(dist.shape) * .5
     dist2[dist < rd] = 0
     dist2[ (dist > 0) & (all_dist > rd) ] = 1
@@ -151,7 +151,7 @@ for rd in [1000,2000,4000,8000,16000]: # representative distance
                Patch(facecolor=[0.993, 0.906, 0.143], edgecolor='none', label='No sample within distance')]
                      
     
-    ax.legend(handles=handles, title="Distance = {} km".format(dd/1000), loc='right',bbox_to_anchor = (1.95,0.5))                
+    ax.legend(handles=handles, title="Distance = {} km".format(rd/1000), loc='right',bbox_to_anchor = (2.1,0.5))                
 
     fig.savefig(base_folder+'/state_distance_{}.png'.format(rd),dpi=300,)
 
@@ -188,13 +188,19 @@ per_too_far = rd_stats[:,1] / no_pix * 100
 fig = pl.figure(1)
 fig.clf()
 ax = fig.add_subplot(111)
-ax.plot(rd_stats[:,0],per_ND)
+l1 = ax.plot(rd_stats[:,0],per_ND,label = 'Area with samples')
 ax2 = ax.twinx()
-ax2.plot(rd_stats[:,0],per_too_far,color='tab:orange')
+l2 = ax2.plot(rd_stats[:,0],per_too_far,color='tab:orange',label='Area without sample\n(unevalutated)')
 ax.set_xlabel('Representative Distance (m)')
 
-ax.set_ylabel('Percent of area with samples with ND closer than rep Dist')
-ax2.set_ylabel('Percent of area with samples closer than rep Dist')
+ax.set_ylabel('Percent of area with samples and\nND closer than rep Dist')
+ax2.set_ylabel('Percent of area without samples\ncloser than rep Dist')
 
 
+lns  = l1+l2
+labs = [l.get_label() for l in lns]
+ax.legend(lns, labs ,loc=5)
+
+
+fig.savefig(base_folder+'/represent_dist_sumary.png',dpi=300)
 
