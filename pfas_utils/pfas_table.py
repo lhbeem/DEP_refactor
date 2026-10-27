@@ -25,7 +25,7 @@ import pandas as pd
 import geopandas as gpd
 from matplotlib import pylab as pl
 import datetime
-
+import glob
 
 
 # columns are Interim Drinking water, EPA MCL
@@ -390,8 +390,13 @@ def main(args):
         
     
     elif args.source == 'common':
-
-        data = gpd.read_file(paths.common +'/' + args.site+'.xlsx',layer='Data')
+        
+        path = glob.glob('{}/*{}*.xlsx'.format( paths.common, args.site ))
+        if len(path) != 1:
+            print ( path )
+            print('Multiple common geology files found for sequence: ',args.site)
+            exit()
+        data = gpd.read_file(path[0],layer='Data')
         if args.s:
             data = data[data.SAMPLE_TYPE == 'SL']
         else:
