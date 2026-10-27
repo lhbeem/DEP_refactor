@@ -72,7 +72,7 @@ function hunt ($folder, $key) { if ($folder -eq "rem"){ ls -Depth 1 "H:\BRWM\Rem
 
 
 function prism {Start-Process "https://wd5-identity.myworkday.com/wday/authgwy/maine/upc/login"; pass}
-
+function qgis {Start-Process "C:\Program Files\QGISQT6 3.44.5\bin\qgis-qt6-bin.exe"}
 
 
 ## geo commands 
