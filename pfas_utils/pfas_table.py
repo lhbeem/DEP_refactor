@@ -434,15 +434,28 @@ def main(args):
                 table = make_table_gw_edd(data)
             plot_table_gw(table,landscape=True)
     else: #greater than 10 sample locations n number of landscape pages
-        n_pages = int( np.ceil( len(data)/10 ) )
         if args.source == 'gis':
+            n_pages = int( np.ceil( len(data)/10 ) )
             for n in range(n_pages):
                 ii = n * 10
                 table = make_table_gw_gis(data.iloc[ii:ii+10])
                 plot_table_gw(table,page = n+1,landscape=True)
-        
-
-    
+        else:
+            n_pages = int(np.ceil( len(set(data.SAMPLE_POINT_NAME)) / 8 ) )
+            
+            locations = list(set(data.SAMPLE_POINT_NAME))
+            locations.sort()
+            num_locs = len(locations)
+            i1 = int(np.floor(num_locs / n_pages ))
+            for n in range(n_pages):
+                if n == (n_pages - 1):
+                    locs = locations[i1*n:]
+                else:   
+                    locs = locations[i1*n:i1*(n+1)]
+                dd = data[data.SAMPLE_POINT_NAME.isin(locs)]
+                table = make_table_gw_edd(dd)
+                plot_table_gw(table,page = n+1,landscape=True)
+                
    
 
 

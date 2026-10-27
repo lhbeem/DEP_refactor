@@ -26,9 +26,9 @@ import argparse
 import numpy as np
 from matplotlib import pylab as pl
 import geopandas as gpd
-
+import pandas as pd
 import shapely
-
+import pyproj
 
 layer_compounds =  {
               'PFBS' : 'PFBS',
@@ -62,7 +62,9 @@ layer_compounds =  {
               'PFODA': 'PFODA',}
 
 def main(args):
-     
+    
+    P = pyproj.Proj('EPSG:26919')
+    
     #check compound
     if args.compound == '6':
         args.compound = 'Sum of 6'
@@ -127,24 +129,61 @@ def main(args):
     # load soil polygons
     soils = gpd.read_file(paths.soil_polygons, mask = ROI)
     
-    # check for samples witin ROI
-    samples = gpd.read_file(paths.sample_locations, mask = ROI)
-    # format array on concentrations for compound
-    con = np.zeros(len(samples))
-    for i,c in enumerate(samples[layer_name].tolist()):
-        try:
-            con[i] = float(c)
-        except:
-            if c is None:
-                con[i] = 0
-            elif c.startswith('ND'):
-                con[i] = 0
-            elif c.endswith(('J','U','B')):
-                con[i] = float(c.split(' ')[0])
     
-    sx = np.array(samples['geometry'].x.tolist())
-    sy = np.array(samples['geometry'].y.tolist())
-    
+    if args.c:
+        # load common geology
+        samples = pd.read_excel('{}/{}.xlsx'.format(paths.common ,args.seq ), sheet_name='Data')
+        if compound == 'Sum of 6':
+            parameter = 'SUM OF 6 PFAS (PFHPA + PFHXS + PFOA + PFNA + PFOS + PFDA)'
+        else:
+            print('TODO: translate other compounds into common geology parameters names ')
+            print('common geolgoy currently not functional with compound: ',compound)
+            exit()
+            
+        samples = samples[samples.PARAMETER == parameter] # extract the compound to be plotted
+        samples = samples[samples.SAMPLE_TYPE == 'GW']  # only plot GW results
+        samples = samples[~samples.SAMPLE_LOCATION.isin(['BT','AF'])] # remove filtered water results
+        
+        # for each sample location take the most recent observation
+        locations = list(set(samples.SAMPLE_POINT_NAME))
+        for loc in locations:
+            if len(samples[samples.SAMPLE_POINT_NAME == loc]) > 1:
+                locs = samples[samples.SAMPLE_POINT_NAME == loc]
+                max_index = locs.SAMPLE_DATE.idxmax()
+                all_index = locs.index.tolist()
+                for ind in all_index:
+                    if ind == max_index:
+                        continue
+                    samples = samples.drop(ind)
+                    
+        # make concnetration array
+        con = samples.CONCENTRATION.to_numpy()
+
+        
+        # make position array
+        sx,sy = P( samples.SAMPLE_POINT_LONGITUDE , samples.SAMPLE_POINT_LATITUDE  )
+
+
+    else:
+        # load GIS layer of GW results
+        # check for samples witin ROI
+        samples = gpd.read_file(paths.sample_locations, mask = ROI)
+        # format array on concentrations for compound
+        con = np.zeros(len(samples))
+        for i,c in enumerate(samples[layer_name].tolist()):
+            try:
+                con[i] = float(c)
+            except:
+                if c is None:
+                    con[i] = 0
+                elif c.startswith('ND'):
+                    con[i] = 0
+                elif c.endswith(('J','U','B')):
+                    con[i] = float(c.split(' ')[0])
+        
+        sx = np.array(samples['geometry'].x.tolist())
+        sy = np.array(samples['geometry'].y.tolist())
+        
     
     
     # make map
@@ -267,7 +306,7 @@ def main(args):
     
     
     # plot contours
-    if args.c:
+    if args.cont:
         vmin = cb.mappable.norm.vmin
         vmax = cb.mappable.norm.vmax
         pl.tricontour(sx/1000,sy/1000,con,np.linspace(vmin,vmax,6)[1:5],vmin=vmin , vmax=vmax)
@@ -311,9 +350,10 @@ if __name__=="__main__":
     parser.add_argument('seq', help='sequence number of site')
     parser.add_argument('--compound','-s', nargs='?', type=str.upper, default = '6',help='Compound to display')
     parser.add_argument('--dist','-d' ,nargs = '?', default = 800, type = float, help='distance from field(s) edge to include in map (meters)')
-    parser.add_argument('-c' ,action='store_true', help='Turn on concentration contour plotting')
+    parser.add_argument('-cont' ,action='store_true', help='Turn on concentration contour plotting')
     parser.add_argument('-pseq' ,action='store_true', help='Turn on plot sequence number for adjacent fields')
     parser.add_argument('-dl' ,action='store_true', help='Direct label concentrations')
+    parser.add_argument('-c' ,action='store_true', help='Use Common geology file instead of gis layer')
    
     
     args = parser.parse_args()
