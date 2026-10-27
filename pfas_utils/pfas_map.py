@@ -29,6 +29,8 @@ import geopandas as gpd
 import pandas as pd
 import shapely
 import pyproj
+import glob
+
 
 layer_compounds =  {
               'PFBS' : 'PFBS',
@@ -132,7 +134,12 @@ def main(args):
     
     if args.c:
         # load common geology
-        samples = pd.read_excel('{}/{}.xlsx'.format(paths.common ,args.seq ), sheet_name='Data')
+        path = glob.glob('{}/*{}*.xlsx'.format(paths.common ,args.seq ))
+        if len(path) != 1:
+            print(path)
+            print('Multiple common geology files found that match sequence: ',args.seq)
+            exit()
+        samples = pd.read_excel(path[0], sheet_name='Data')
         if compound == 'Sum of 6':
             parameter = 'SUM OF 6 PFAS (PFHPA + PFHXS + PFOA + PFNA + PFOS + PFDA)'
         else:
