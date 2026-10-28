@@ -6,15 +6,15 @@ Created on Thu Feb 26 08:17:08 2026
 """
 
 import argparse
-import paths
+
 import pathlib
 import os
 import sys
 base_folder = os.path.dirname(__file__) #folder that contains the script
-sys.path.append(base_folder)
+sys.path.append(base_folder+'')
 
 import geo_utils
-
+import paths
 
 
 def main(args):

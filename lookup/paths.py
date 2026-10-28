@@ -58,6 +58,7 @@ me_outline = data +'/geo_files/Maine_State_outline.gpkg'
 me_outline_lo = data +'/geo_files/lo_res_maine.gpkg'
 quadrangle = data +'/geo_files/24k_grid.gpkg'
 surficial = data + '/geo_files/surficial24k.gpkg'
+surficial_250 = data + '/geo_files/Surficial_Geology_250K_Units.gpkg'
 bedrock = data + '/geo_files/bedrock500k.gpkg'
 soil = data +'/geo_files/Map Unit Polygons - ME.gpkg'
 
