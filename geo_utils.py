@@ -19,6 +19,7 @@ from osgeo import gdal,osr
 
 
 def arr2geotiff(arr,filename,epsg,ulx,uly,dx,dy,skew = [0,0]):
+    # array to Geotiff
     height,width = arr.shape
     driver = gdal.GetDriverByName("GTiff")
     dataset = driver.Create(filename, width, height, 1, gdal.GDT_Float32)
@@ -72,6 +73,16 @@ def pt2zip(x,y):
     return zips.NAME20.tolist()[0]
 
 
+def get_site_name(seq):
+    if not isinstance(seq,int):
+        seq = int(seq)
+    all_sites = gpd.read_file(paths.egad_sites)
+    pt = all_sites[all_sites['MEDEP_Site'] == seq]
+    if len(pt) == 1:
+        return pt['MEDEP_S_19'].to_list()[0]
+    
+    
+    
 def find_site_point(seq, p=False):
     # check for the existance of a site point
     all_sites = gpd.read_file(paths.egad_sites)
