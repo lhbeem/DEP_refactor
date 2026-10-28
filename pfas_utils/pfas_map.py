@@ -16,11 +16,12 @@ import os
 import sys
 base_folder = os.path.dirname(__file__) #folder that contains the script
 sys.path.append(os.path.join(base_folder,'..','lookup'))
-sys.path.append(base_folder)
+sys.path.append(base_folder+'/..')
 
 import paths
 import rags
-import LD_site_table
+# import LD_site_table
+import geo_utils
 
 import argparse
 import numpy as np
@@ -78,8 +79,10 @@ def main(args):
         print('use one of:',layer_compounds.keys())
         exit()
     compound = args.compound
-    table = LD_site_table.table()
-    sitename = table[table.seq == int(args.seq)].site.to_list()[0]
+    
+    sitename = geo_utils.get_site_name(args.seq)
+    # table = LD_site_table.table()
+    # sitename = table[table.seq == int(args.seq)].site.to_list()[0]
     
     
     
@@ -140,6 +143,7 @@ def main(args):
             print('Multiple common geology files found that match sequence: ',args.seq)
             exit()
         samples = pd.read_excel(path[0], sheet_name='Data')
+        
         if compound == 'Sum of 6':
             parameter = 'SUM OF 6 PFAS (PFHPA + PFHXS + PFOA + PFNA + PFOS + PFDA)'
         else:
@@ -150,6 +154,8 @@ def main(args):
         samples = samples[samples.PARAMETER == parameter] # extract the compound to be plotted
         samples = samples[samples.SAMPLE_TYPE == 'GW']  # only plot GW results
         samples = samples[~samples.SAMPLE_LOCATION.isin(['BT','AF'])] # remove filtered water results
+        
+        
         
         # for each sample location take the most recent observation
         locations = list(set(samples.SAMPLE_POINT_NAME))
