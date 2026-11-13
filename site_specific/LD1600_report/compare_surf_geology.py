@@ -24,6 +24,33 @@ import numpy as np
 Make map for each site comparing exceedances to surficial geology
 '''
 
+clr = { 'Pem' : ['End Moraine (Pem)','#9667b9'],
+       'Pp' : ['Presumpscot (Pp)','#c7c7c7'],
+       'Pt' : ['Till','#a0d9e4'],
+       'Pu' : ['Undifferentiated','#b9be3d'],
+       'Pg' : ['Glacier Meltwater','#279f3a'],
+       'Pm' : ['Shoreline','#29bccd'],
+       'H' : ['Holocene','#2d75b1'],
+       'other' : ['other', '#d4342f'] } #af
+
+    
+
+def unit_color(gdf):
+    color = [None] * len(gdf)
+    label = [None] * len(gdf)
+    units = list( clr.keys() )[:-1]
+    for i,row in enumerate(gdf.iterrows()):
+        row = row[1]
+        found = 0
+        for unit in units:
+            if row.UNIT.startswith(unit):
+                label[i],color[i] = clr[unit]
+                found = 1
+                break
+        if found == 0:
+            label[i],color[i] = clr['other']
+        
+    return color,label
 
 #%% load data
 data = pd.read_excel(paths.report_database,sheet_name='Sheet 1')
@@ -59,28 +86,106 @@ for loc in locs:
                 'geometry' : shapely.Point(P(row.SAMPLE_POINT_LONGITUDE,row.SAMPLE_POINT_LATITUDE))}
     
 #%%
-def plot_geom(gdf,ax,color=None,fill=False,point=False,outline=False):
-    if fill:
-        gdf.plot()
-        # pts = shapely.get_coordinates(gdf[1].geometry)
-        # ax.fill(pts[:,0]/1000,pts[:,1]/1000,label=gdf[1].UNIT)
-    if point:
-        pts = shapely.get_coordinates(gdf[1].geometry)
-        if color is not None:
-            ax.plot(pts[:,0],pts[:,1],'.', color= color)
-        else:
-            ax.plot(pts[:,0],pts[:,1],'r.')
-    if outline:
-        pts = shapely.get_coordinates(gdf[1].geometry)
-        ax.plot(pts[:,0],pts[:,1],'w')
+# def plot_geom(gdf,ax,color=None,fill=False,point=False,outline=False):
+#     if fill:
+#         gdf.plot()
+#         # pts = shapely.get_coordinates(gdf[1].geometry)
+#         # ax.fill(pts[:,0]/1000,pts[:,1]/1000,label=gdf[1].UNIT)
+#     if point:
+#         pts = shapely.get_coordinates(gdf[1].geometry)
+#         if color is not None:
+#             ax.plot(pts[:,0],pts[:,1],'.', color= color)
+#         else:
+#             ax.plot(pts[:,0],pts[:,1],'r.')
+#     if outline:
+#         pts = shapely.get_coordinates(gdf[1].geometry)
+#         ax.plot(pts[:,0],pts[:,1],'w')
 
-    return 
+#     return 
 
 
-no_geol = []
-no_field = []
-no_locs = []
-complete = []
+# no_geol = []
+# no_field = []
+# no_locs = []
+# complete = []
+# dist = 500 #  [meters] to make initial bounding box
+
+
+# sites = set(sum6.SITE_SEQ)
+# for site in sites:
+#     # make bounding box based off of spreading fields and buffer distance
+#     main_fields = fields[fields.EGAD_SITE_ == int(site)]
+#     if len(main_fields) == 0:
+#         print('site has no field polygon: {}'.format(site))
+#         no_field.append(site)
+#         continue
+    
+    
+#     ROI = main_fields.total_bounds + [-dist, -dist, dist, dist]
+#     x = [ROI[0] , ROI[0] , ROI[2] , ROI[2] , ROI[0]]
+#     y = [ROI[1] , ROI[3] , ROI[3] , ROI[1] , ROI[1]]
+#     ROI = np.array(np.vstack((x,y))).T
+#     ROI = shapely.Polygon( ROI )
+#     # extract surfical units within box
+#     geol = gpd.read_file(paths.surficial, mask= ROI, layer='Maine_Surficial_Geology_Units')
+#     label_250 = False
+#     if len(geol) == 0:
+#         print('Site outside 24k surficial maps: {}'.format(site))
+#         no_geol.append(site)
+#         print('Using 250k map instead')
+#         geol = gpd.read_file(paths.surficial_250, mask= ROI,)
+#         label_250 = True
+        
+#     # color for unit
+#     color,label = unit_color(geol)
+    
+#     # extract sample points
+#     locs = sum6.clip(ROI)
+    
+#     if len(locs) == 0:
+#         print('Site has no samples in ROI: {}'.format(site))
+#         no_locs.append(site)
+#         continue
+    
+#     # extract fields
+#     field = fields.clip(ROI)
+    
+#     # geology
+#     geol = geol.clip(ROI)
+    
+   
+#     fig = pl.figure(1)
+#     fig.clf()
+#     ax = fig.add_subplot(111)
+    
+    
+    
+#     geol.plot(edgecolor='black',cmap='tab20',ax=ax,legend=True,column='UNIT')
+    
+#     pt_colors = np.where(locs.CONCENTRATION > 20, 'red', 'blue')
+#     # locs['point_color'] = np.where(locs.CONCENTRATION > 20, 'red', 'blue')
+#     locs.plot(color=pt_colors, ax=ax, markersize=50)
+    
+#     field.plot(edgecolor='white', facecolor = 'none', ax=ax)
+
+#     ax.set_title(site)
+#     ax.set_xlabel('Easting (km)')
+#     ax.set_ylabel('Northing (km)')
+#     if label_250:
+#         fig.savefig(base_folder+'/surficial_250/{}_250.png'.format(site))
+#     else:
+#         fig.savefig(base_folder+'/surficial_maps/{}.png'.format(site))
+        
+    
+#     complete.append(site)
+
+
+#%% make maps with concentratation not binary above or below 20 ppt 
+
+no_geol2 = []
+no_field2 = []
+no_locs2 = []
+complete2 = []
 dist = 500 #  [meters] to make initial bounding box
 
 
@@ -90,7 +195,7 @@ for site in sites:
     main_fields = fields[fields.EGAD_SITE_ == int(site)]
     if len(main_fields) == 0:
         print('site has no field polygon: {}'.format(site))
-        no_field.append(site)
+        no_field2.append(site)
         continue
     
     
@@ -101,17 +206,23 @@ for site in sites:
     ROI = shapely.Polygon( ROI )
     # extract surfical units within box
     geol = gpd.read_file(paths.surficial, mask= ROI, layer='Maine_Surficial_Geology_Units')
+    label_250 = False
     if len(geol) == 0:
         print('Site outside 24k surficial maps: {}'.format(site))
-        no_geol.append(site)
-        continue
+        no_geol2.append(site)
+        print('Using 250k map instead')
+        geol = gpd.read_file(paths.surficial_250, mask= ROI,)
+        label_250 = True
+        
+    # color for unit
+    color,label = unit_color(geol)
     
     # extract sample points
     locs = sum6.clip(ROI)
     
     if len(locs) == 0:
         print('Site has no samples in ROI: {}'.format(site))
-        no_locs.append(site)
+        no_locs2.append(site)
         continue
     
     # extract fields
@@ -125,20 +236,41 @@ for site in sites:
     fig.clf()
     ax = fig.add_subplot(111)
     
-    geol.plot(edgecolor='black',cmap="tab20",ax=ax,legend=True,column = 'UNIT')
     
-    pt_colors = np.where(locs.CONCENTRATION > 20, 'red', 'blue')
+    
+    geol.plot(edgecolor='black',cmap='tab20',ax=ax,legend=True,column='UNIT')
+    
+    
     # locs['point_color'] = np.where(locs.CONCENTRATION > 20, 'red', 'blue')
-    locs.plot(color=pt_colors, ax=ax, markersize=50)
+    
+    locs_not0 = locs[locs.CONCENTRATION > 0 ]
+    pt_colors = np.where(locs_not0.CONCENTRATION > 20, 'red', 'none')
+    locs_not0.plot( ax=ax, markersize=50,column='CONCENTRATION',legend=True)
+    locs_not0.plot(ax=ax, edgecolor=pt_colors, markersize=50, marker='o',color='none')
+    
+    locs0 =  locs[locs.CONCENTRATION == 0 ]
+    locs0.plot(ax=ax, markersize=50, marker='^',color='tab:blue')
     
     field.plot(edgecolor='white', facecolor = 'none', ax=ax)
 
     ax.set_title(site)
     ax.set_xlabel('Easting (km)')
     ax.set_ylabel('Northing (km)')
+    if label_250:
+        fig.savefig(base_folder+'/surficial_250/{}_250.png'.format(site))
+    else:
+        fig.savefig(base_folder+'/surficial_maps/{}.png'.format(site))
+        
     
-    fig.savefig(base_folder+'/surficial_maps/{}.pdf'.format(site))
-    complete.append(site)
+    complete2.append(site)
+    break
+
+#%%
+# pl.figure(11)
+# pl.clf()
+# ax = pl.subplot(111)
+# locs.plot( ax=ax, markersize=50,column='CONCENTRATION',legend=True)
+# locs.plot(ax=ax, edgecolor=pt_colors, markersize=50, marker='o',color='none')
 
 #%% copy promising to all_figures
 
@@ -147,16 +279,16 @@ seqs_maybe    = [28191,33204,29603,160720,30295,
                  30409,30613,30059,160723,
                  29228,29402,30303,142099]
 
-nn = 1
-for seq in seqs_possibly:
-    shutil.copyfile(base_folder+'/surficial_maps/{}.png'.format(seq),
-                    base_folder+'/all_figures/surf{:02}_{}.png'.format(nn,seq))
-    nn +=1
+# nn = 1
+# for seq in seqs_possibly:
+#     shutil.copyfile(base_folder+'/surficial_maps/{}.png'.format(seq),
+#                     base_folder+'/all_figures/surf{:02}_{}.png'.format(nn,seq))
+#     nn +=1
 
-for seq in seqs_maybe:
-    shutil.copyfile(base_folder+'/surficial_maps/{}.png'.format(seq),
-                    base_folder+'/all_figures/surf{:02}_{}.png'.format(nn,seq))
-    nn +=1
+# for seq in seqs_maybe:
+#     shutil.copyfile(base_folder+'/surficial_maps/{}.png'.format(seq),
+#                     base_folder+'/all_figures/surf{:02}_{}.png'.format(nn,seq))
+#     nn +=1
 
 
 

@@ -8,7 +8,7 @@ Created on Thu Oct 15 08:27:24 2026
 import os
 import sys
 base_folder = os.path.dirname(__file__) #folder that contains the script
-sys.path.append(os.path.join(base_folder,'lookup'))
+sys.path.append(os.path.join(base_folder,'../../lookup'))
 
 import numpy as np
 import matplotlib.pylab as pl
@@ -19,6 +19,8 @@ import math
 import pyproj
 from pypdf import PdfWriter
 import glob
+
+
 
 ''' 
 LD1600 Report General Figures
