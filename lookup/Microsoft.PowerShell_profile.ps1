@@ -71,7 +71,7 @@ function hunt ($folder, $key) { if ($folder -eq "rem"){ ls -Depth 1 "H:\BRWM\Rem
 				}
 
 
-function prism {Start-Process "https://wd5-identity.myworkday.com/wday/authgwy/maine/upc/login"; pass}
+function prism {Start-Process "https://wd5-identity.myworkday.com/wday/authgwy/maine/upc/login"}
 function qgis {Start-Process "C:\Program Files\QGISQT6 3.44.5\bin\qgis-qt6-bin.exe"}
 
 
@@ -79,7 +79,7 @@ function qgis {Start-Process "C:\Program Files\QGISQT6 3.44.5\bin\qgis-qt6-bin.e
 function egad_dist { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\egad_dist.py" @args }
 function pt2town { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\pt2town.py" @args }
 function make_buffer { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\make_buffer.py" @args }
-
+function combine_gpkg { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\combine_gpkg.py" @args }
 
 ## document search and manipualtion 
 function heic { & python "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\heic_convert.py" @args}

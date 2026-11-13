@@ -61,6 +61,7 @@ surficial = data + '/geo_files/surficial24k.gpkg'
 surficial_250 = data + '/geo_files/Surficial_Geology_250K_Units.gpkg'
 bedrock = data + '/geo_files/bedrock500k.gpkg'
 soil = data +'/geo_files/Map Unit Polygons - ME.gpkg'
+marine_limit = data + '/geo_files/Marine_Limit.gpkg'
 
 towns =  data +'/geo_files/Maine_Town_Boundary.gpkg'
 zips = data +'/geo_files/zip_code.gpkg'
