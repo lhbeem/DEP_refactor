@@ -23,7 +23,7 @@ from matplotlib.lines import Line2D
 outfolder = r"C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\site_specific\LD1600_report\20261119_hydro_discussion_figures"
 
 seqs = [27476,28191,29257,29722,30016,30055,
-       30303,30409,30613,159164]
+       30303,30409,159164]
 
 color_map = {'Ha': '#aec7e8', # Holocene Alluvium
              'Hw': '#1f77b4', # Holocene Wetland
@@ -51,7 +51,7 @@ extended_legend = ['Ha - Holocene Alluvium',
 #           29946,30059,30369,30437,157189,
 #           159164,161489] # JR identied sequences. 
 
-dist = 600
+dist = 1000
 
 data = pd.read_excel(paths.report_database,sheet_name='Sheet 1')
 # extract sum of 6 exceedance 

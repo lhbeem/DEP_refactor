@@ -19,6 +19,7 @@ import math
 import pyproj
 from pypdf import PdfWriter
 import glob
+import tqdm
 
 
 
@@ -38,6 +39,16 @@ class pie_color:
     bt20_100 = palette.red
     bt100_1k = palette.green
     gt1k = palette.purple
+
+
+class avg_color:
+    longSA = '#6e96fa'
+    shortSA = '#a1bdfb'
+    preSA = '#cddafd'
+    longCA = '#94ca97'
+    shortCA = '#c2e1c4'
+    preCA = '#e4f0e5'
+
 
 P = pyproj.Proj('EPSG:26919')
 
@@ -67,7 +78,7 @@ unique_sites = set(gw.SITE_SEQ)
 
 
 
-#%% pie chart 
+#%% pie chart Fig 2 in 2025 report
 
 # do we count resamples as indepentant
 # if not, which value do we choose for the location (highest?, lowest?, mean?)
@@ -84,6 +95,155 @@ for loc in unique_locations:
         pie_data.loc[len(pie_data)] = loc_data.iloc[0]
     elif len(loc_data) > 1:
         pie_data.loc[len(pie_data)] = loc_data.loc[loc_data.CONCENTRATION.idxmax()]
+
+# number of locations that fall into concentration bins
+# ordered from highest to lowest concentation
+size = [len(pie_data[pie_data.CONCENTRATION >= 1000]),
+        len(pie_data[(pie_data.CONCENTRATION < 1000) & (pie_data.CONCENTRATION >= 100)]),
+        len(pie_data[(pie_data.CONCENTRATION < 100) & (pie_data.CONCENTRATION >=20)]),
+        len(pie_data[pie_data.CONCENTRATION < 20]),
+        ]
+
+percent = np.round(np.array(size) / len(pie_data) * 100).astype(int)
+labels = []
+for per in percent:
+    labels.append('{}%'.format(per))
+
+
+
+colors = [pie_color.gt1k,pie_color.bt100_1k,pie_color.bt20_100,pie_color.lt20]
+
+
+fig = pl.figure(1)
+fig.clf()
+ax = fig.add_subplot(111)
+ax.pie(size,labels=labels,colors=colors, startangle = 90,wedgeprops = {'edgecolor':'w'})
+
+
+leg = [Line2D([0], [0], color=pie_color.lt20, lw=4),
+       Line2D([0], [0], color=pie_color.bt20_100, lw=4),
+       Line2D([0], [0], color=pie_color.bt100_1k, lw=4),
+       Line2D([0], [0], color=pie_color.gt1k, lw=4)]
+
+leg_text = ['Wells less than 20 ppt',
+            'Wells between 20 and 100 ppt',
+            'Wells between 100 and 1000 ppt',
+            'Wells greater than 1000 ppt']
+
+ax.legend(leg, leg_text,bbox_to_anchor=(1.05, 0.5), loc='center left',frameon=False)
+ax.text(.72,.72,'n = {}'.format(len(pie_data)))
+
+fig.savefig(save_folder+'/01_pie_chart.pdf',bbox_inches='tight')
+
+
+#%% bar average by source type
+def representative_concentration(df,params=True):
+    
+    if params == True:
+        use_params = set(df.PARAMETER)
+    else:
+        use_params = params
+    
+    out_data = pd.DataFrame(columns = df.columns)
+    unique_locations = set(df.SAMPLE_POINT_SEQ)
+    for loc in tqdm.tqdm(unique_locations):
+        loc_data2 = df[df.SAMPLE_POINT_SEQ == loc] 
+        for param in use_params:
+            loc_data = loc_data2[loc_data2.PARAMETER == param]
+            if len(loc_data) == 0:
+                continue
+            elif len(loc_data) == 1:
+                out_data.loc[len(out_data)] = loc_data.iloc[0]
+            elif len(loc_data) > 1:
+                out_data.loc[len(out_data)] = loc_data.loc[loc_data.CONCENTRATION.idxmax()] 
+
+    return out_data
+
+# todo representative_concentration. try Building a list of dictionarys then make dataframe adding to a bif dataframe gets slow
+
+#%% Figure 6: Stackage bar average groundwater
+
+
+params = ['TOTAL PFCA Precursors','TOTAL Short-Chain PFCAs','TOTAL Long-Chain PFCAs',
+          'TOTAL PFSA Precursors','TOTAL Short-Chain PFSAs','TOTAL Long-Chain PFSAs',]
+
+sludge = representative_concentration(gw[gw.SITE_TYPE == 'SLUDGE'], params)
+landfill = representative_concentration(gw[gw.SITE_TYPE == 'LANDFILL'], params)
+
+#remove monitoring wells 
+landfill =landfill[landfill.SAMPLE_POINT_TYPE != 'MONITORING WELL']
+
+septage = representative_concentration(gw[gw.SITE_TYPE == 'SEPTAGE'], params)
+
+#%%
+n_sludge = len(set(sludge.SAMPLE_POINT_SEQ))
+n_landfill = len(set(landfill.SAMPLE_POINT_SEQ))
+n_septage = len(set(septage.SAMPLE_POINT_SEQ))
+
+
+bar_x = ['Sludge\nn = {}'.format(n_sludge), 'Landfill\nn = {}'.format(n_landfill),
+         'Septage\nn = {}'.format(n_septage)]
+
+bar_data = []
+
+for param in params:
+    bar_data.append( [ sludge[sludge.PARAMETER == param].CONCENTRATION.mean(),
+                       landfill[landfill.PARAMETER == param].CONCENTRATION.mean(),
+                       septage[septage.PARAMETER == param].CONCENTRATION.mean(),
+                       ])
+
+bar_data = np.array(bar_data)
+
+fig = pl.figure(1)
+fig.clf()
+pl.bar(bar_x,bar_data[0],color = avg_color.preCA,label= 'Precursor PFCA')
+pl.bar(bar_x,bar_data[1],bottom = bar_data[0],color = avg_color.shortCA,label= 'Short-Chain PFCA')
+pl.bar(bar_x,bar_data[2],bottom = np.sum(bar_data[:2,:],axis=0),color = avg_color.longCA,label= 'Long-Chain PFCA')
+pl.bar(bar_x,bar_data[3],bottom = np.sum(bar_data[:3,:],axis=0),color = avg_color.preSA,label= 'Precursor PFSA')
+pl.bar(bar_x,bar_data[4],bottom = np.sum(bar_data[:4,:],axis=0),color = avg_color.shortSA,label= 'Short-Chain PFSA')
+pl.bar(bar_x,bar_data[5],bottom = np.sum(bar_data[:5,:],axis=0),color = avg_color.longSA,label= 'Long-Chain PFSA')
+
+pl.legend(reverse=True)
+#%% fig 6 alternative pdf
+fig = pl.figure(1)
+fig.clf() 
+
+ 
+for i,param in enumerate(params):
+    hist_data = sludge[sludge.PARAMETER == param].CONCENTRATION
+    bins = np.logspace(-1, 5.5)
+    bins = np.insert(bins,0,0)
+    
+    count, edge = np.histogram(hist_data,bins=bins)
+    
+    fraction = count / len(hist_data)
+    cuml = np.cumsum(count)/ len(hist_data)
+    
+    ax = fig.add_subplot(2,3,i+1)
+    ax.plot(edge[:-1],fraction,'k')
+    ax.set_xscale('log')   
+    ax2 = ax.twinx()
+    ax2.plot(edge[:-1],cuml) 
+    
+    ylim = max(fraction[1:])+.01
+    
+    ax.vlines(hist_data.mean(),0,ylim)
+    ax.vlines(hist_data.median(),0,ylim,'r')
+    # ax.set_xlim([1,20000])
+    
+    ax.set_title(param)
+    
+    if hist_data.median() == 0:
+        ax.text(1000,.01,'median = 0')
+    
+    ax.set_xlabel('Sum6 Concentration (ppt)')
+    ax.set_ylabel('Fraction')
+    ax2.set_ylabel('Cumulative Fraction')
+    ax.set_ylim([0,ylim])
+    # fig.savefig(save_folder+'/long_pfsa_pdf.pdf')
+
+
+
 
 
 #%% MCL for each location determine if there is ever sum6 < 20 and other compound greater than MCL
@@ -141,44 +301,7 @@ fig.savefig(save_folder+'/00_basic_stats.pdf',bbox_inches='tight')
 
 
 #%%
-# number of locations that fall into concentration bins
-# ordered from highest to lowest concentation
-size = [len(pie_data[pie_data.CONCENTRATION >= 1000]),
-        len(pie_data[(pie_data.CONCENTRATION < 1000) & (pie_data.CONCENTRATION >= 100)]),
-        len(pie_data[(pie_data.CONCENTRATION < 100) & (pie_data.CONCENTRATION >=20)]),
-        len(pie_data[pie_data.CONCENTRATION < 20]),
-        ]
 
-percent = np.round(np.array(size) / len(pie_data) * 100).astype(int)
-labels = []
-for per in percent:
-    labels.append('{}%'.format(per))
-
-
-
-colors = [pie_color.gt1k,pie_color.bt100_1k,pie_color.bt20_100,pie_color.lt20]
-
-
-fig = pl.figure(1)
-fig.clf()
-ax = fig.add_subplot(111)
-ax.pie(size,labels=labels,colors=colors, startangle = 90,wedgeprops = {'edgecolor':'w'})
-
-
-leg = [Line2D([0], [0], color=pie_color.lt20, lw=4),
-       Line2D([0], [0], color=pie_color.bt20_100, lw=4),
-       Line2D([0], [0], color=pie_color.bt100_1k, lw=4),
-       Line2D([0], [0], color=pie_color.gt1k, lw=4)]
-
-leg_text = ['Wells less than 20 ppt',
-            'Wells between 20 and 100 ppt',
-            'Wells between 100 and 1000 ppt',
-            'Wells greater than 1000 ppt']
-
-ax.legend(leg, leg_text,bbox_to_anchor=(1.05, 0.5), loc='center left',frameon=False)
-ax.text(.72,.72,'n = {}'.format(len(pie_data)))
-
-fig.savefig(save_folder+'/01_pie_chart.pdf',bbox_inches='tight')
 
 #%% probability distribution of concentration 
 

@@ -52,36 +52,41 @@ def representive_concentration(df):
                     'geometry' : shapely.Point(P(row.SAMPLE_POINT_LONGITUDE,row.SAMPLE_POINT_LATITUDE))}
     return sorted_data
 #%%
-outfolder = r"C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\site_specific\LD1600_report\20261119_hydro_discussion_figures"
 
-seqs = [27476,28191,29257,29722,30016,30055,
-       30303,30409,30613,159164]
 
 
 data = pd.read_excel(paths.report_database,sheet_name='Sheet 1')
 
 # make pyproj object to project into epsg:29616
 P = pyproj.Proj('EPSG:26919')
+#%%
+outfolder = r"C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\site_specific\LD1600_report\20261119_hydro_discussion_figures"
 
+seqs = [27476,28191,29257,29722,30016,30055,
+       30303,30409,159164]
 
 # use plot_locations to get sample_point_seq for points in unit
 use = { '27476' : [159761,159765],
-        '28191' : False,
-        '29257' : False,
+        '28191' : [54239,54238,54232,54231,54230,159733,142879],
+        '29257' : [130212,130211,130112],
         '29722' : [163259,163140,163142,154880,157779],
         '30016' : [146276,146358,146888,147455,147514,
                    158789,147100,146886,152063,152226,153260],
-        '30055' : False,
-        '30303' : False,
-        '30409' : False,
-        '30613' : False,
-        '159164': False,
+        '30055' : [144360,144579,144578,145087,144348,144580,144359],
+        '30303' : [152548,152549,152551,152553,152554,
+                   152555,153168,153702,154327,
+                   154328,154331,154332,155035,155037,
+                   155038,155443,159713,159714,159796],
+        '30409' : [143635,143634,143629,143627,144215],
         }
 
-
-use2 = {'30016' : [146278, 146279,146887],
+# use2, use as not in unit. Else use all for sequence number 
+use2 = {'30016' : [146278, 146279,146887,154566,154568],
+        '29257' : [159869,159734,159735,159736,159737,159739,159740],
+        '30055' : [144358,144354,144349,144357,144577,144582,144343],
+        '30303' : [155442,156017,158379,153823,155036,159712,155039],
+        '30409' : [143633,143684],#143624}
         }
-
 unit = {'27476' : 'Pem',
         '28191' : 'Pt',
         '29257' : 'Pem',
@@ -98,7 +103,7 @@ unit = {'27476' : 'Pem',
 #%%
 
 
-seq2 = 30016
+seq2 = 159164
 comp_data = data[(data.SITE_SEQ == seq2) & (data.PARAMETER == 'SUM OF 6 PFAS')]
 comp_data = representive_concentration(comp_data)
 plot_locations(comp_data)
@@ -142,27 +147,28 @@ params = ['HFPO-DA',
           'TOTAL PFSA Precursors',]
 
 
-for seq in [27476]:
+for seq in seqs:
     
     
     unit_con = {}
     not_unit_con = {}
     for param in params:
-        # get PFOS results, 
         comp_data = data[(data.SITE_SEQ == seq) & (data.PARAMETER == param)]
         comp_data = representive_concentration(comp_data)
-        # remove samples with a position
+        # remove samples without a position
         comp_data = comp_data[~comp_data.geometry.x.isna()]
         
-        
-        
         unit_con[param] = comp_data[comp_data.SAMPLE_POINT_SEQ.isin(use[str(seq)])]
-        not_unit_con[param] = comp_data[~comp_data.SAMPLE_POINT_SEQ.isin(use[str(seq)])]
+        
+        if str(seq) in use2.keys():
+            not_unit_con[param] = comp_data[comp_data.SAMPLE_POINT_SEQ.isin(use2[str(seq)])]
+        else:
+            not_unit_con[param] = comp_data[~comp_data.SAMPLE_POINT_SEQ.isin(use[str(seq)])]
 
 
     fig = pl.figure(1)
     fig.clf()
-    ax = fig.add_axes([.05,.4,.9,.55])
+    ax = fig.add_axes([.1,.4,.85,.55])
     
     x_pos = 0
     tick_label = []
@@ -185,13 +191,4 @@ for seq in [27476]:
     fig.savefig(outfolder + '/{}_composition.png'.format(seq), dpi=300)
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    #get PFOA results
+
