@@ -51,7 +51,7 @@ extended_legend = ['Ha - Holocene Alluvium',
 #           29946,30059,30369,30437,157189,
 #           159164,161489] # JR identied sequences. 
 
-dist = 500
+dist = 600
 
 data = pd.read_excel(paths.report_database,sheet_name='Sheet 1')
 # extract sum of 6 exceedance 
