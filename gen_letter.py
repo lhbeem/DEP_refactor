@@ -548,9 +548,9 @@ def last(args):
     
     # open lab report pdf
     re = PdfReader(pdf_path)
-    # get lab report page numbers 
-    p  = find_result_page(re,sample)
-    p1 = find_glossary_page(re)
+    # get lab report page numbers  now done in Highlight_pages call
+    # p  = find_result_page(re,sample)
+    # p1 = find_glossary_page(re)
     
     #determine sitename from location
     sitename = utils.site_from_location(args.samplelocation)
