@@ -62,7 +62,8 @@ function profile {notepad $profile}
 function launch_egad {MSTSC "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\rdps\egad.rdp"; pass }
 function arc {MSTSC "C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\rdps\arcpro.rdp" ; pass }
 function pass {Set-Clipboard -Value "j,h%&x-P7<7WtC&}"}
-function pass_or {Set-Clipboard -Value "2p7n^D0b1,!)m-Y"}
+function pass_or {Set-Clipboard -Value "@4cHDuPJtQ8#jUJ6mvTK"}
+# "2p7n^D0b1,!)m-Y"
 
 function hunt ($folder, $key) { if ($folder -eq "rem"){ ls -Depth 1 "H:\BRWM\Remediation Division\Sites" | % {$_.FullName} | sls $key}
 				if ($folder -eq "ld") { ls -Depth 1 "H:\BRWM\PFAS - LD 1600\Sites" | % {$_.FullName} | sls $key}
