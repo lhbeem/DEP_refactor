@@ -17,6 +17,7 @@ import pandas as pd
 import geopandas as gpd
 import shapely 
 import matplotlib.pylab as pl
+from matplotlib.lines import Line2D
 
 #%%
 '''
@@ -63,7 +64,7 @@ P = pyproj.Proj('EPSG:26919')
 outfolder = r"C:\Users\Lucas.Beem\OneDrive - State of Maine\Documents\refactor\site_specific\LD1600_report\20261119_hydro_discussion_figures"
 
 seqs = [27476,28191,29257,29722,30016,30055,
-       30303,30409,159164]
+       30303,30409]
 
 # use plot_locations to get sample_point_seq for points in unit
 use = { '27476' : [159761,159765],
@@ -103,10 +104,10 @@ unit = {'27476' : 'Pem',
 #%%
 
 
-seq2 = 159164
-comp_data = data[(data.SITE_SEQ == seq2) & (data.PARAMETER == 'SUM OF 6 PFAS')]
-comp_data = representive_concentration(comp_data)
-plot_locations(comp_data)
+# seq2 = 159164
+# comp_data = data[(data.SITE_SEQ == seq2) & (data.PARAMETER == 'SUM OF 6 PFAS')]
+# comp_data = representive_concentration(comp_data)
+# plot_locations(comp_data)
 
 #%%
 # parameters sorted by chain length
@@ -168,7 +169,7 @@ for seq in seqs:
 
     fig = pl.figure(1)
     fig.clf()
-    ax = fig.add_axes([.1,.4,.85,.55])
+    ax = fig.add_axes([.1,.5,.85,.45])
     
     x_pos = 0
     tick_label = []
@@ -185,7 +186,11 @@ for seq in seqs:
         tick_label.append(param)
         tick_label_pos.append(x_pos+.5)
         x_pos += 3
-        
+    
+    custom_points = [Line2D([0], [0], marker=".", linestyle="none", markersize=10, color=color) for color in ['tab:blue','tab:orange']]
+    leg_points = ax.legend(custom_points, ['In Unit','Out Unit'],loc=2)
+    ax.add_artist(leg_points )
+    
     pl.ylabel('Concentration (ppt)')
     pl.xticks(tick_label_pos, tick_label ,rotation= 90)
     fig.savefig(outfolder + '/{}_composition.png'.format(seq), dpi=300)

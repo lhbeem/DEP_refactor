@@ -86,98 +86,98 @@ for loc in locs:
                 'geometry' : shapely.Point(P(row.SAMPLE_POINT_LONGITUDE,row.SAMPLE_POINT_LATITUDE))}
     
 #%%
-# def plot_geom(gdf,ax,color=None,fill=False,point=False,outline=False):
-#     if fill:
-#         gdf.plot()
-#         # pts = shapely.get_coordinates(gdf[1].geometry)
-#         # ax.fill(pts[:,0]/1000,pts[:,1]/1000,label=gdf[1].UNIT)
-#     if point:
-#         pts = shapely.get_coordinates(gdf[1].geometry)
-#         if color is not None:
-#             ax.plot(pts[:,0],pts[:,1],'.', color= color)
-#         else:
-#             ax.plot(pts[:,0],pts[:,1],'r.')
-#     if outline:
-#         pts = shapely.get_coordinates(gdf[1].geometry)
-#         ax.plot(pts[:,0],pts[:,1],'w')
+def plot_geom(gdf,ax,color=None,fill=False,point=False,outline=False):
+    if fill:
+        gdf.plot()
+        # pts = shapely.get_coordinates(gdf[1].geometry)
+        # ax.fill(pts[:,0]/1000,pts[:,1]/1000,label=gdf[1].UNIT)
+    if point:
+        pts = shapely.get_coordinates(gdf[1].geometry)
+        if color is not None:
+            ax.plot(pts[:,0],pts[:,1],'.', color= color)
+        else:
+            ax.plot(pts[:,0],pts[:,1],'r.')
+    if outline:
+        pts = shapely.get_coordinates(gdf[1].geometry)
+        ax.plot(pts[:,0],pts[:,1],'w')
 
-#     return 
-
-
-# no_geol = []
-# no_field = []
-# no_locs = []
-# complete = []
-# dist = 500 #  [meters] to make initial bounding box
+    return 
 
 
-# sites = set(sum6.SITE_SEQ)
-# for site in sites:
-#     # make bounding box based off of spreading fields and buffer distance
-#     main_fields = fields[fields.EGAD_SITE_ == int(site)]
-#     if len(main_fields) == 0:
-#         print('site has no field polygon: {}'.format(site))
-#         no_field.append(site)
-#         continue
+no_geol = []
+no_field = []
+no_locs = []
+complete = []
+dist = 500 #  [meters] to make initial bounding box
+
+
+sites = set(sum6.SITE_SEQ)
+for site in sites:
+    # make bounding box based off of spreading fields and buffer distance
+    main_fields = fields[fields.EGAD_SITE_ == int(site)]
+    if len(main_fields) == 0:
+        print('site has no field polygon: {}'.format(site))
+        no_field.append(site)
+        continue
     
     
-#     ROI = main_fields.total_bounds + [-dist, -dist, dist, dist]
-#     x = [ROI[0] , ROI[0] , ROI[2] , ROI[2] , ROI[0]]
-#     y = [ROI[1] , ROI[3] , ROI[3] , ROI[1] , ROI[1]]
-#     ROI = np.array(np.vstack((x,y))).T
-#     ROI = shapely.Polygon( ROI )
-#     # extract surfical units within box
-#     geol = gpd.read_file(paths.surficial, mask= ROI, layer='Maine_Surficial_Geology_Units')
-#     label_250 = False
-#     if len(geol) == 0:
-#         print('Site outside 24k surficial maps: {}'.format(site))
-#         no_geol.append(site)
-#         print('Using 250k map instead')
-#         geol = gpd.read_file(paths.surficial_250, mask= ROI,)
-#         label_250 = True
+    ROI = main_fields.total_bounds + [-dist, -dist, dist, dist]
+    x = [ROI[0] , ROI[0] , ROI[2] , ROI[2] , ROI[0]]
+    y = [ROI[1] , ROI[3] , ROI[3] , ROI[1] , ROI[1]]
+    ROI = np.array(np.vstack((x,y))).T
+    ROI = shapely.Polygon( ROI )
+    # extract surfical units within box
+    geol = gpd.read_file(paths.surficial, mask= ROI, layer='Maine_Surficial_Geology_Units')
+    label_250 = False
+    if len(geol) == 0:
+        print('Site outside 24k surficial maps: {}'.format(site))
+        no_geol.append(site)
+        print('Using 250k map instead')
+        geol = gpd.read_file(paths.surficial_250, mask= ROI,)
+        label_250 = True
         
-#     # color for unit
-#     color,label = unit_color(geol)
+    # color for unit
+    color,label = unit_color(geol)
     
-#     # extract sample points
-#     locs = sum6.clip(ROI)
+    # extract sample points
+    locs = sum6.clip(ROI)
     
-#     if len(locs) == 0:
-#         print('Site has no samples in ROI: {}'.format(site))
-#         no_locs.append(site)
-#         continue
+    if len(locs) == 0:
+        print('Site has no samples in ROI: {}'.format(site))
+        no_locs.append(site)
+        continue
     
-#     # extract fields
-#     field = fields.clip(ROI)
+    # extract fields
+    field = fields.clip(ROI)
     
-#     # geology
-#     geol = geol.clip(ROI)
+    # geology
+    geol = geol.clip(ROI)
     
    
-#     fig = pl.figure(1)
-#     fig.clf()
-#     ax = fig.add_subplot(111)
+    fig = pl.figure(1)
+    fig.clf()
+    ax = fig.add_subplot(111)
     
     
     
-#     geol.plot(edgecolor='black',cmap='tab20',ax=ax,legend=True,column='UNIT')
+    geol.plot(edgecolor='black',cmap='tab20',ax=ax,legend=True,column='UNIT')
     
-#     pt_colors = np.where(locs.CONCENTRATION > 20, 'red', 'blue')
-#     # locs['point_color'] = np.where(locs.CONCENTRATION > 20, 'red', 'blue')
-#     locs.plot(color=pt_colors, ax=ax, markersize=50)
+    pt_colors = np.where(locs.CONCENTRATION > 20, 'red', 'blue')
+    # locs['point_color'] = np.where(locs.CONCENTRATION > 20, 'red', 'blue')
+    locs.plot(color=pt_colors, ax=ax, markersize=50)
     
-#     field.plot(edgecolor='white', facecolor = 'none', ax=ax)
+    field.plot(edgecolor='white', facecolor = 'none', ax=ax)
 
-#     ax.set_title(site)
-#     ax.set_xlabel('Easting (km)')
-#     ax.set_ylabel('Northing (km)')
-#     if label_250:
-#         fig.savefig(base_folder+'/surficial_250/{}_250.png'.format(site))
-#     else:
-#         fig.savefig(base_folder+'/surficial_maps/{}.png'.format(site))
+    ax.set_title(site)
+    ax.set_xlabel('Easting (km)')
+    ax.set_ylabel('Northing (km)')
+    if label_250:
+        fig.savefig(base_folder+'/surficial_250/{}_250.png'.format(site))
+    else:
+        fig.savefig(base_folder+'/surficial_maps/{}.png'.format(site))
         
     
-#     complete.append(site)
+    complete.append(site)
 
 
 #%% make maps with concentratation not binary above or below 20 ppt 
@@ -299,9 +299,9 @@ table.loc[len(table)] = ['Number of maps created', len(complete) ]
 table.loc[len(table)] = ['Number of sites without field', len(no_field) ]
 table.loc[len(table)] = ['Number of sites with field, but outside 24k surficial', len(no_geol) ]
 table.loc[len(table)] = ['Number of sites with field and surficial, but no sample locations', len(no_locs) ]
-table.loc[len(table)] = ['','']
-table.loc[len(table)] = ['Number of sites possible correlaion', len(seqs_possibly) ]
-table.loc[len(table)] = ['Number of sites maybe correlaion', len(seqs_maybe) ]
+#table.loc[len(table)] = ['','']
+#table.loc[len(table)] = ['Number of sites possible correlaion', len(seqs_possibly) ]
+#table.loc[len(table)] = ['Number of sites maybe correlaion', len(seqs_maybe) ]
     
 fig = pl.figure(1)
 fig.clf()
@@ -309,4 +309,4 @@ ax = fig.add_subplot(111)
 ax.axis('off')
 tbl = ax.table(cellText=table.values, colLabels=None, loc='center',cellLoc='center')
 
-fig.savefig(base_folder+'/all_figures/surf00_basic_stats.pdf',bbox_inches='tight')   
+fig.savefig(base_folder+'/all_figures/surf00_basic_stats.png',bbox_inches='tight')   

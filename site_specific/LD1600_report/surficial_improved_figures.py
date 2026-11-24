@@ -84,7 +84,7 @@ for loc in locs:
                 'geometry' : shapely.Point(P(row.SAMPLE_POINT_LONGITUDE,row.SAMPLE_POINT_LATITUDE))}
 
 #%% plotting 
-for seq in seqs:
+for seq in [29722]:
     main_fields = fields[fields.EGAD_SITE_ == int(seq)]
     
     
@@ -131,7 +131,7 @@ for seq in seqs:
     
     ax.axis('equal')
     
-    # aa.legend(bbox_to_anchor=(1.45, 1))
+    # ax.legend()
     
     custom_points = [Line2D([0], [0], marker="o", linestyle="none", markersize=10, color=color) for color in color_map.values()]
     leg_points = ax.legend(custom_points, color_map.keys(),loc=5,bbox_to_anchor =[1.4,.5])
@@ -143,7 +143,7 @@ for seq in seqs:
     ax.set_ylabel('Northing (km)')
 
     fig.savefig(outfolder+'/surficial_{}_exceed.png'.format(seq))
-    pl.close(fig)
+    # pl.close(fig)
 
 
 #%% print legend
